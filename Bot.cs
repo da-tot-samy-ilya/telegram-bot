@@ -19,6 +19,16 @@ namespace telegram_bot
         {
             token = Token;
         }
+        public void PrintStorage(List<BotUser> storage)
+        {
+            int count = 0;
+            Console.WriteLine(" \n");
+            foreach (var user in storage)
+            {
+                Console.WriteLine($"{++count}: {user.id} | {user.name} | {user.gameStatus}");
+            }
+            Console.WriteLine(" \n");
+        }
         public BotUser SearchUserInStorageById(long userId, List<BotUser> storage)
         {
             foreach (var user in storage)
@@ -33,6 +43,9 @@ namespace telegram_bot
     
         async public void Init()
         {
+            string root = Path.GetTempPath();
+            var db = new DB(root, "db", "users","json");
+            
             botClient = new TelegramBotClient(token);
             cts = new CancellationTokenSource(); 
             receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
@@ -67,6 +80,7 @@ namespace telegram_bot
                 chatId: chatId,
                 text: answer,
                 cancellationToken: cancellationToken);
+            PrintStorage(storage);
         }
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) {
             var ErrorMessage = exception switch {
