@@ -9,7 +9,8 @@ namespace telegram_bot
 {
     public class TelegramBot
     {
-        private List<BotUser> storage = new List<BotUser>();
+        private DB dbUsers;
+        
         public string token;
         public TelegramBotClient botClient;
         public CancellationTokenSource cts;
@@ -19,32 +20,10 @@ namespace telegram_bot
         {
             token = Token;
         }
-        public void PrintStorage(List<BotUser> storage)
-        {
-            int count = 0;
-            Console.WriteLine(" \n");
-            foreach (var user in storage)
-            {
-                Console.WriteLine($"{++count}: {user.id} | {user.name} | {user.gameStatus}");
-            }
-            Console.WriteLine(" \n");
-        }
-        public BotUser SearchUserInStorageById(long userId, List<BotUser> storage)
-        {
-            foreach (var user in storage)
-            {
-                if (userId == user.id)
-                {
-                    return user;
-                }
-            }
-            return null;
-        }
-    
         async public void Init()
         {
             string root = Path.GetTempPath();
-            var db = new DB(root, "db", "users","json");
+            dbUsers = new DB(root, "db", "users","json");
             
             botClient = new TelegramBotClient(token);
             cts = new CancellationTokenSource(); 
@@ -64,15 +43,15 @@ namespace telegram_bot
             if (update.Message is not { } message) return;
             if (message.Text is not { } messageText) return;
             
-            var chatId = message.Chat.Id;
+            var userId = message.Chat.Id;
             
-            var user = SearchUserInStorageById(chatId, storage);
+            /*var user = SearchUserInStorageById(chatId, storage);
             
             if (user is null)
             {
                 user = new BotUser(GameStatus.NotPlaying, chatId, message.Chat.Username, null);
                 storage.Add(user);
-            }
+            }*/
 
             var answer = Logic.GenerateAnswer(user, messageText);
             
@@ -80,7 +59,6 @@ namespace telegram_bot
                 chatId: chatId,
                 text: answer,
                 cancellationToken: cancellationToken);
-            PrintStorage(storage);
         }
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) {
             var ErrorMessage = exception switch {

@@ -4,7 +4,6 @@ namespace telegram_bot
 {
     public class Logic
     {
-        // внутри меняет gameStatus переданного юзера
         public static string GenerateAnswer(BotUser user, string message)
         {
             var answer = "";
