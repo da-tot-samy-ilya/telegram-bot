@@ -1,11 +1,14 @@
-﻿namespace telegram_bot;
-
-public class Program
+﻿namespace telegram_bot
 {
-    public static void Main()
+    public class Program
     {
-        var bot = new TelegramBot("5355452679:AAFt0gwMWJfRPyt__DuF2wPJ9H-drgVHZfg");
+        public static void Main()
+        {
+            var bot = new TelegramBot("5355452679:AAFt0gwMWJfRPyt__DuF2wPJ9H-drgVHZfg");
         
-        bot.Init();
+            bot.Init();
+            Console.Read();
+        }
     }
-}
+};
+
