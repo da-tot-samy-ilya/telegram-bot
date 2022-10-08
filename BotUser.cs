@@ -18,6 +18,15 @@ namespace telegram_bot
             gameProps = props;
 
         }
+        public BotUser(long Id, string Name)
+        {
+            var props = new Game(0, 0, 0);
+            gameStatus = GameStatus.NotPlaying;
+            id = Id;
+            name = Name;
+            gameProps = props;
+
+        }
     }
 };
 

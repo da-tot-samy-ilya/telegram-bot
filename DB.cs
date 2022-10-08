@@ -7,8 +7,8 @@ namespace telegram_bot
         private string path;
         
         
-        private Dictionary<long, BotUser> dbUsers;
-        private Dictionary<string, string> dbKeyWords;
+        public Dictionary<long, BotUser> dbUsers;
+        public Dictionary<string, string> dbKeyWords;
         
         public DB(string root, string localDir, string dbName, string extention)
         {
@@ -37,6 +37,20 @@ namespace telegram_bot
             File.WriteAllText(path, serializedDict);
         }
 
+        public BotUser ReturnUserByIdAndName(long id, string name)
+        {
+            
+            if (FindByKey(id))
+            {
+                return GetByKey(id);
+            }
+            else
+            {
+                var user = new BotUser(id, name);
+                Add(user);
+                return user;
+            }
+        }
         public void Add(BotUser user)
         {
             if (FindByKey(user.id))

@@ -44,19 +44,12 @@ namespace telegram_bot
             if (message.Text is not { } messageText) return;
             
             var userId = message.Chat.Id;
+            var userName = message.Chat.Username;
             
-            /*var user = SearchUserInStorageById(chatId, storage);
-            
-            if (user is null)
-            {
-                user = new BotUser(GameStatus.NotPlaying, chatId, message.Chat.Username, null);
-                storage.Add(user);
-            }*/
-
-            var answer = Logic.GenerateAnswer(user, messageText);
+            var answer = Logic.GenerateAnswer(dbUsers, userId, userName, messageText);
             
             Message sentMessage = await botClient.SendTextMessageAsync(
-                chatId: chatId,
+                chatId: userId,
                 text: answer,
                 cancellationToken: cancellationToken);
         }

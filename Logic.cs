@@ -4,7 +4,50 @@ namespace telegram_bot
 {
     public class Logic
     {
-        public static string GenerateAnswer(BotUser user, string message)
+        static string root = Path.GetTempPath();
+        static DB dbKeyWords = new DB(root, "db", "users","json");
+        
+        public static string MessageProcessing(string message)
+        {
+            var keyWordsInMessage = message.Split(' ');
+            var keyWord = "";
+            foreach (var keyWordInMessage in keyWordsInMessage)
+            {
+                if (dbKeyWords.dbKeyWords.ContainsKey(keyWordInMessage))
+                {
+                    if (keyWord == "")
+                        keyWord = keyWordInMessage;
+                    else
+                    {
+                        keyWord = "";
+                        break;
+                    }
+                }
+            }
+            if (keyWordsInMessage.Length == 2
+                && int.TryParse(keyWordsInMessage[0], out int number1)
+                && int.TryParse(keyWordsInMessage[1], out int number2))
+                return keyWordsInMessage[0] + " " + keyWordsInMessage[1];
+            return keyWord;
+        }
+
+        public static string GenerateAnswer(DB db, long userId, string userName, string message)
+        {
+            BotUser user = db.ReturnUserByIdAndName(userId, userName);
+            
+            var keyWord = MessageProcessing(message);
+
+            if (user.gameStatus == GameStatus.NotPlaying)
+                return user.gameProps.UserIsNotPlaying(keyWord, user, dbKeyWords.dbKeyWords, dbKeyWords);
+
+            if (user.gameStatus == GameStatus.ChoosingRange)
+                return user.gameProps.UserIsChoosingRange(keyWord, user, dbKeyWords.dbKeyWords, dbKeyWords);
+
+            return user.gameProps.UserIsPlaying(keyWord, user, dbKeyWords.dbKeyWords, dbKeyWords);
+        }
+        
+        
+        /*public static string GenerateAnswer(BotUser user, string message)
         {
             var answer = "";
             int numForTryParse;
@@ -97,7 +140,7 @@ namespace telegram_bot
             }
 
             return answer;
-        }
+        }*/
     }
 };
 
