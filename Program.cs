@@ -1,4 +1,6 @@
-﻿namespace telegram_bot
+﻿using telegram_bot.enums;
+
+namespace telegram_bot
 {
     public class Program
     {
@@ -8,6 +10,7 @@
         
             bot.Init();
             Console.Read();
+
         }
     }
 };

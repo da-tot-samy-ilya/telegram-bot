@@ -1,4 +1,5 @@
-﻿using telegram_bot.enums;
+﻿
+using telegram_bot.enums;
 namespace telegram_bot
 {
     public class Game
@@ -14,10 +15,10 @@ namespace telegram_bot
             choosedNumber = Number;
         }
         
-        public string UserIsPlaying(string message, BotUser user, Dictionary<string, string> keyWords, DB dbKeyWords)
+        public string UserIsPlaying(string message, BotUser user, DbKeyWords dbKeyWords,DbUsers dbUsers)
         {
             if (message == "/end" || message == "/help")
-                return keyWords[message]; 
+                return dbKeyWords.GetByKey(message);
             if (int.TryParse(message, out var numForTryParse))
             {
                 if (numForTryParse <= user.gameProps.rightBorder && numForTryParse >= user.gameProps.leftBorder)
@@ -25,7 +26,7 @@ namespace telegram_bot
                     if (numForTryParse == user.gameProps.choosedNumber)
                     {
                         user.gameStatus = GameStatus.NotPlaying;
-                        dbKeyWords.Update(user.id, user);
+                        dbUsers.Update(user.id, user);
                         return $"You win, That`s {user.gameProps.choosedNumber}!\nTry to play again: /play";
                     }
                     if (numForTryParse > user.gameProps.choosedNumber)
@@ -36,26 +37,26 @@ namespace telegram_bot
                 }
                 return $"You went out of range: [{user.gameProps.leftBorder.ToString()},{user.gameProps.rightBorder.ToString()}]\n Please, try again";
             }
-            return keyWords[""];
+            return dbKeyWords.GetByKey("");
         }
 
-        public string UserIsNotPlaying(string message, BotUser user, Dictionary<string, string> keyWords, DB dbKeyWords)
+        public string UserIsNotPlaying(string message, BotUser user, DbKeyWords dbKeyWords, DbUsers dbUsers)
         {
             if (message == "/play")
             {
                 user.gameStatus = GameStatus.ChoosingRange;
-                dbKeyWords.Update(user.id, user);
-                return keyWords[message];
+                dbUsers.Update(user.id, user);
+                return dbKeyWords.GetByKey(message);
             }
-            else if (keyWords.ContainsKey(message) || message != "/end")
-                return keyWords[message];
-            return keyWords[""];
+            else if (dbKeyWords.FindByKey(message) || message != "/end")
+                return dbKeyWords.GetByKey(message);
+            return dbKeyWords.GetByKey("");
         }
 
-        public string UserIsChoosingRange(string message, BotUser user, Dictionary<string, string> keyWords, DB dbKeyWords)
+        public string UserIsChoosingRange(string message, BotUser user, DbKeyWords dbKeyWords, DbUsers dbUsers)
         {
             if (message == "/end" || message == "/help")
-                return keyWords[message];
+                return dbKeyWords.GetByKey(message);
                 
             var splitted = message.Split(' ');
 
@@ -63,9 +64,10 @@ namespace telegram_bot
             var isSecondtNum = int.Parse(splitted[1]);
 
             user.gameStatus = GameStatus.Playing;
-            dbKeyWords.Update(user.id, user);
             user.gameProps.leftBorder = isFirstNum;
             user.gameProps.rightBorder = isSecondtNum;
+            
+            dbUsers.Update(user.id, user);
 
             var rnd = new Random();
             user.gameProps.choosedNumber = rnd.Next(isFirstNum, isSecondtNum);
@@ -73,4 +75,5 @@ namespace telegram_bot
         }
     }
 };
+
 

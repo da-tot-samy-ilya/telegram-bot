@@ -9,7 +9,7 @@ namespace telegram_bot
 {
     public class TelegramBot
     {
-        private DB dbUsers;
+        private DbUsers dbUsers;
         
         public string token;
         public TelegramBotClient botClient;
@@ -22,8 +22,7 @@ namespace telegram_bot
         }
         async public void Init()
         {
-            string root = Path.GetTempPath();
-            dbUsers = new DB(root, "db", "users","json");
+            dbUsers = new DbUsers("users","json");
             
             botClient = new TelegramBotClient(token);
             cts = new CancellationTokenSource(); 
@@ -45,8 +44,10 @@ namespace telegram_bot
             
             var userId = message.Chat.Id;
             var userName = message.Chat.Username;
+
+            var user = new BotUser(GameStatus.NotPlaying, userId, userName, new Game(0, 0, 0));
             
-            var answer = Logic.GenerateAnswer(dbUsers, userId, userName, messageText);
+            var answer = Logic.GenerateAnswer(dbUsers, userId, user, messageText);
             
             Message sentMessage = await botClient.SendTextMessageAsync(
                 chatId: userId,

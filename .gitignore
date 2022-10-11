@@ -1,5 +1,7 @@
 ﻿/.idea/
+/.vs/
 /bin/
 /obj/
+/db/
 telegram-bot.csproj
 telegram-bot.sln
