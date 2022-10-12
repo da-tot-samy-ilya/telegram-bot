@@ -9,59 +9,59 @@ namespace telegram_bot
 {
     public class TelegramBot
     {
-        private DbUsers dbUsers;
+        private DbUsers _dbUsers;
         
-        public string token;
-        public TelegramBotClient botClient;
-        public CancellationTokenSource cts;
-        public ReceiverOptions receiverOptions;
-        public User me;
-        public TelegramBot(string Token)
+        private readonly string _token;
+        private TelegramBotClient _botClient;
+        private CancellationTokenSource _cts;
+        private ReceiverOptions _receiverOptions;
+        private User _me;
+        public TelegramBot(string token)
         {
-            token = Token;
+            _token = token;
         }
-        async public void Init()
+        public async void Init()
         {
-            dbUsers = new DbUsers("users","json");
+            _dbUsers = new DbUsers("users","json");
             
-            botClient = new TelegramBotClient(token);
-            cts = new CancellationTokenSource(); 
-            receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
-            botClient.StartReceiving(
+            _botClient = new TelegramBotClient(_token);
+            _cts = new CancellationTokenSource(); 
+            _receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
+            _botClient.StartReceiving(
                 updateHandler: HandleUpdateAsync, 
                 pollingErrorHandler: HandlePollingErrorAsync, 
-                receiverOptions: receiverOptions, 
-                cancellationToken: cts.Token);
-            me = await botClient.GetMeAsync();
-
-            Console.WriteLine($"Start listening for @{me.Username}");
+                receiverOptions: _receiverOptions, 
+                cancellationToken: _cts.Token
+                );
+            _me = await _botClient.GetMeAsync();
+            Console.WriteLine($"Start listening for @{_me.Username}");
             Console.ReadLine();
-            cts.Cancel();
+            _cts.Cancel();
         }
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken) {
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken) {
             if (update.Message is not { } message) return;
             if (message.Text is not { } messageText) return;
-            
+
             var userId = message.Chat.Id;
-            var userName = message.Chat.Username;
+            var userName = message.Chat.Username == null ? "" : message.Chat.Username;
 
             var user = new BotUser(GameStatus.NotPlaying, userId, userName, new Game(0, 0, 0));
             
-            var answer = Logic.GenerateAnswer(dbUsers, userId, user, messageText);
+            var answer = Logic.GenerateAnswer(_dbUsers, userId, user, messageText);
             
-            Message sentMessage = await botClient.SendTextMessageAsync(
+            await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text: answer,
                 cancellationToken: cancellationToken);
         }
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) {
-            var ErrorMessage = exception switch {
+        private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) {
+            var errorMessage = exception switch {
                 ApiRequestException apiRequestException
                     => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(ErrorMessage);
+            Console.WriteLine(errorMessage);
             return Task.CompletedTask;
         }
     } 

@@ -3,9 +3,9 @@ using telegram_bot.enums;
 
 namespace telegram_bot
 {
-    public class Db<TKey, TValue>
+    public class Db<TKey, TValue> where TKey : notnull
     {
-        protected readonly string _path;
+        private readonly string _path;
         protected Dictionary<TKey, TValue> Table;
 
         protected Db(string dbName, string fileExtention)
@@ -65,7 +65,7 @@ namespace telegram_bot
                 return emptyDict;
             }
             var json = File.ReadAllText(_path);
-            if (json.Length == 0)
+            if (json == "")
             {
                 json = "{}";
                 WriteAllTable(emptyDict);
@@ -111,29 +111,7 @@ namespace telegram_bot
     }
     public class DbKeyWords : Db<string, string>
     {
-        public DbKeyWords(string dbName, string fileExtention) : base(dbName, fileExtention)
-        {
-            Table["/start"] = "Bot game 'Guess number' - guess number from range\n" +
-                              "/start - начать\n" +
-                              "/help - commands\n" +
-                              "/play - start game (set left and right borders)";
-            Table["/help"] = "Bot game 'Guess number' - guess number from range\n" +
-                              "/start - начать\n" +
-                              "/help - commands\n" +
-                              "/play - start game (set left and right borders)";
-            Table[""] = "Bot game 'Guess number' - guess number from range\n" +
-                             "/start - начать\n" +
-                             "/help - commands\n" +
-                             "/play - start game (set left and right borders)";
-            Table["/end"] = "You have completed the game\n" +
-                            "/start - начать\n" +
-                            "/help - commands\n" +
-                            "/play - start game (set left and right borders)";
-            Table["/play"] = "set left and right border by pattern: [leftBorder] [rightBorder]";
-            Table["Привет"] = "Привет!";
-            Table["Пока"] = "Пока:(";
-            WriteAllTable(Table);
-        }
+        public DbKeyWords(string dbName, string fileExtention) : base(dbName, fileExtention) { }
         public string GetByKey(string key)
         {
             Table = ReadAllTable();
