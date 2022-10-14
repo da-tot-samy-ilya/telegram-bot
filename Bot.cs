@@ -10,6 +10,8 @@ namespace telegram_bot
     public class TelegramBot
     {
         private DbUsers _dbUsers;
+        private DbKeyWords _dbKeyWords;
+        private Logic _logic;
         
         private readonly string _token;
         private TelegramBotClient _botClient;
@@ -20,10 +22,13 @@ namespace telegram_bot
         {
             _token = token;
         }
+
         public async void Init()
         {
             _dbUsers = new DbUsers("users","json");
-            
+            _dbKeyWords = new DbKeyWords("keyWords", "json");
+            _logic = new Logic(_dbUsers, _dbKeyWords);
+
             _botClient = new TelegramBotClient(_token);
             _cts = new CancellationTokenSource(); 
             _receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
@@ -38,24 +43,29 @@ namespace telegram_bot
             Console.ReadLine();
             _cts.Cancel();
         }
-        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken) {
+
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
             if (update.Message is not { } message) return;
             if (message.Text is not { } messageText) return;
 
             var userId = message.Chat.Id;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username;
 
-            var user = new BotUser(GameStatus.NotPlaying, userId, userName, new Game(0, 0, 0));
+            var user = new BotUser(GameStatus.NotPlaying, userId, userName, new Game(0, 0, 0, (int)userId));
             
-            var answer = Logic.GenerateAnswer(_dbUsers, userId, user, messageText);
+            var answer = _logic.GenerateAnswer(userId, user, messageText);
             
             await botClient.SendTextMessageAsync(
                 chatId: userId,
                 text: answer,
                 cancellationToken: cancellationToken);
         }
-        private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) {
-            var errorMessage = exception switch {
+
+        private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) 
+        {
+            var errorMessage = exception switch 
+            {
                 ApiRequestException apiRequestException
                     => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
                 _ => exception.ToString()

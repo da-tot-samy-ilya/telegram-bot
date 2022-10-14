@@ -10,14 +10,8 @@ namespace telegram_bot
 
         protected Db(string dbName, string fileExtention)
         {
-            var curDir = Directory.GetCurrentDirectory();
-            var parent2 = Directory.GetParent(curDir).FullName;
-            var parent1 = Directory.GetParent(parent2).FullName;
-            var parent = Directory.GetParent(parent1).FullName;
-
-            Directory.CreateDirectory(System.IO.Path.Join(parent, "db"));
-            
-            _path = System.IO.Path.Join(parent, "db", dbName + "." + fileExtention);
+            Directory.CreateDirectory(@"..\..\..\db");
+            _path = Path.Join(@"..\..\..\db", dbName + "." + fileExtention);
             Table = new Dictionary<TKey, TValue>();
         }
         public void Update(TKey id, TValue user)
@@ -93,8 +87,8 @@ namespace telegram_bot
             }
             else
             {
-                var emptyGame = new Game(0, 0, 0);
-                var newUser = new BotUser(GameStatus.NotPlaying, id, user.name, emptyGame);
+                var emptyGame = new Game(0, 0, 0, (int)id);
+                var newUser = new BotUser(GameStatus.NotPlaying, id, user.Name, emptyGame);
                 Add(id, newUser);
                 return user;
             }

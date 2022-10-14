@@ -4,29 +4,17 @@ namespace telegram_bot
 {
     public class BotUser
     {
-        public GameStatus gameStatus = GameStatus.NotPlaying;
-        public long id = 0;
-        public string name = null;
-        public Game gameProps = null;
-
-        public BotUser(GameStatus Status, long Id, string Name, Game GameProps)
+        public GameStatus GameStatus;
+        public readonly long Id;
+        public readonly string Name;
+        public readonly Game GameProps;
+        public BotUser(GameStatus status, long id, string name, Game gameProps)
         {
-            var props = new Game(0, 0, 0);
-            gameStatus = Status;
-            id = Id;
-            name = Name;
-            gameProps = props;
-
+            GameStatus = status;
+            Id = id;
+            Name = name;
+            GameProps = gameProps;
         }
-        /*public BotUser(long Id, string Name)
-        {
-            var props = new Game(0, 0, 0);
-            gameStatus = GameStatus.NotPlaying;
-            id = Id;
-            name = Name;
-            gameProps = props;
-    
-        }*/
     }
 };
 

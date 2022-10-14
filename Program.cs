@@ -13,13 +13,7 @@
 
         public static string GetToken()
         {
-            var curDir = Directory.GetCurrentDirectory();
-            var parent2 = Directory.GetParent(curDir).FullName;
-            var parent1 = Directory.GetParent(parent2).FullName;
-            var parent = Directory.GetParent(parent1).FullName;
-            
-            var path = System.IO.Path.Join(parent, "db","token.txt");
-            var token = File.ReadAllText(path);
+            var token = File.ReadAllText(@"..\..\..\db\token.txt");
             return token;
         }
     }

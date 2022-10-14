@@ -4,15 +4,21 @@ namespace telegram_bot
 {
     public class Logic
     {
-        static DbKeyWords dbKeyWords = new DbKeyWords("keyWords", "json");
-
-        private static string MessageProcessing(string message)
+        private readonly DbKeyWords _dbKeyWords;
+        private readonly DbUsers _dbUsers;
+        public Logic(DbUsers dbUsers, DbKeyWords dbKeyWords)
+        {
+            _dbKeyWords = dbKeyWords;
+            _dbUsers = dbUsers;
+        }
+        
+        private string GetHighlightKeyword(string message) // Выделение ключевых слов: если есть одно, возвращает его, если ни одного "", если 2, то ""
         {
             var keyWordsInMessage = message.Split(' ');
             var keyWord = "";
             foreach (var keyWordInMessage in keyWordsInMessage)
             {
-                if (dbKeyWords.ReadAllTable().ContainsKey(keyWordInMessage))
+                if (_dbKeyWords.ReadAllTable().ContainsKey(keyWordInMessage))
                 {
                     if (keyWord == "")
                         keyWord = keyWordInMessage;
@@ -23,27 +29,25 @@ namespace telegram_bot
                     }
                 }
             }
-
-            if (keyWordsInMessage.Length == 2
-                && int.TryParse(keyWordsInMessage[0], out int number1)
-                && int.TryParse(keyWordsInMessage[1], out int number2))
-                return keyWordsInMessage[0] + " " + keyWordsInMessage[1];
             return keyWord;
         }
 
-        public static string GenerateAnswer(DbUsers dbUsers, long userId, BotUser user, string message)
+        public string GenerateAnswer(long userId, BotUser user, string message) // ответ на сообщение пользователя
         {
-            user = dbUsers.GetOrCreate(userId, user);
+            user = _dbUsers.GetOrCreate(userId, user); // проверка существования пользователя
 
-            var keyWord = MessageProcessing(message);
+            var keyWord = GetHighlightKeyword(message); // выделение ключевых слов
 
-            if (user.gameStatus == GameStatus.NotPlaying)
-                return user.gameProps.UserIsNotPlaying(keyWord, user, dbKeyWords, dbUsers);
+            if (user.GameStatus == GameStatus.NotPlaying) 
+                return user.GameProps.GetReplyIfNotPlaying(keyWord, user, _dbKeyWords, _dbUsers);
 
-            if (user.gameStatus == GameStatus.ChoosingRange)
-                return user.gameProps.UserIsChoosingRange(keyWord, user, dbKeyWords, dbUsers);
+            if (keyWord == "")
+                keyWord = message;
 
-            return user.gameProps.UserIsPlaying(keyWord, user, dbKeyWords, dbUsers);
+            if (user.GameStatus == GameStatus.ChoosingRange)
+                return user.GameProps.GetReplyIfChoosingRange(keyWord, user, _dbKeyWords, _dbUsers);
+
+            return user.GameProps.GetReplyIfPlaying(keyWord, user, _dbKeyWords, _dbUsers);
         }
 
     }
