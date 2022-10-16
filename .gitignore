@@ -2,6 +2,5 @@
 /.vs/
 /bin/
 /obj/
-/db/
-telegram-bot.csproj
-telegram-bot.sln
+/db/users.json
+/db/token.txt

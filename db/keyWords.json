@@ -1,0 +1,9 @@
+{
+  "/start":"Bot game 'Guess number' - guess number from range\n/start - начать\n/help - commands\n/play - start game (set left and right borders)",
+  "/help":"Bot game 'Guess number' - guess number from range\n/start - начать\n/help - commands\n/play - start game (set left and right borders)",
+  "":"Bot game 'Guess number' - guess number from range\n/start - начать\n/help - commands\n/play - start game (set left and right borders)",
+  "/end":"You have completed the game\n/start - начать\n/help - commands\n/play - start game (set left and right borders)",
+  "/play":"Set left and right border by pattern: [leftBorder] [rightBorder]",
+  "Привет":"Привет!",
+  "Пока":"Пока:("
+}
