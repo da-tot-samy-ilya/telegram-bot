@@ -13,6 +13,7 @@ namespace telegram_bot
         private DbUsers _dbUsers;
         private DbKeyWords _dbKeyWords;
         private Logic _logic;
+        private MainPage _mainPage;
         
         private readonly string _token;
         private TelegramBotClient _botClient;
@@ -29,6 +30,7 @@ namespace telegram_bot
             _dbUsers = new DbUsers("users","json");
             _dbKeyWords = new DbKeyWords("keyWords", "json");
             _logic = new Logic(_dbUsers, _dbKeyWords);
+            _mainPage = new MainPage();
 
             _botClient = new TelegramBotClient(_token);
             _cts = new CancellationTokenSource(); 
@@ -53,13 +55,14 @@ namespace telegram_bot
             var userId = message.Chat.Id;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username;
 
-            var user = new BotUser(GameStatus.NotPlaying, userId, userName, new Game(0, 0, 0, (int)userId));
-            
+            var user = new BotUser(GameStatus.NotPlaying, userId, userName);
+
             var answer = _logic.GenerateAnswer(userId, user, messageText);
-            
+
             await botClient.SendTextMessageAsync(
                 chatId: userId,
-                text: answer,
+                text: "Hey",
+                replyMarkup: _mainPage.inlineKeyboard,
                 cancellationToken: cancellationToken);
         }
 

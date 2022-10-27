@@ -87,8 +87,7 @@ namespace telegram_bot
             }
             else
             {
-                var emptyGame = new Game(0, 0, 0, (int)id);
-                var newUser = new BotUser(GameStatus.NotPlaying, id, user.Name, emptyGame);
+                var newUser = new BotUser(GameStatus.NotPlaying, id, user.Name);
                 Add(id, newUser);
                 return user;
             }

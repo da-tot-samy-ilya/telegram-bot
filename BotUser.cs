@@ -7,13 +7,11 @@ namespace telegram_bot
         public GameStatus GameStatus;
         public readonly long Id;
         public readonly string Name;
-        public readonly Game GameProps;
-        public BotUser(GameStatus status, long id, string name, Game gameProps)
+        public BotUser(GameStatus status, long id, string name)
         {
             GameStatus = status;
             Id = id;
             Name = name;
-            GameProps = gameProps;
         }
     }
 };

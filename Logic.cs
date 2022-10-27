@@ -38,7 +38,9 @@ namespace telegram_bot
 
             var keyWord = GetHighlightKeyword(message); // выделение ключевых слов
 
-            if (user.GameStatus == GameStatus.NotPlaying) 
+            return null;
+
+            /*if (user.GameStatus == GameStatus.NotPlaying) 
                 return user.GameProps.GetReplyIfNotPlaying(keyWord, user, _dbKeyWords, _dbUsers);
 
             if (keyWord == "")
@@ -47,7 +49,7 @@ namespace telegram_bot
             if (user.GameStatus == GameStatus.ChoosingRange)
                 return user.GameProps.GetReplyIfChoosingRange(keyWord, user, _dbKeyWords, _dbUsers);
 
-            return user.GameProps.GetReplyIfPlaying(keyWord, user, _dbKeyWords, _dbUsers);
+            return user.GameProps.GetReplyIfPlaying(keyWord, user, _dbKeyWords, _dbUsers);*/
         }
 
     }
