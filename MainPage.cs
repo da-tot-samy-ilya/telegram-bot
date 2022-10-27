@@ -35,5 +35,10 @@ namespace telegram_bot
             });
 
         }
+
+        public Message getAnswer()
+        {
+            return null;
+        }
     }
 }

@@ -9,6 +9,18 @@ namespace telegram_bot
 {
     public class Tinder
     {
-        
+        MainPage _mainPage;
+
+        public Tinder()
+        {
+            _mainPage = new MainPage();
+        }
+
+        public Message getAnswer(BotUser user, Message message)
+        {
+            return null;
+        }
+
+
     }
 }
