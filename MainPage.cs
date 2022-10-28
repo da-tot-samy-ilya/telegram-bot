@@ -10,6 +10,7 @@ namespace telegram_bot
     public class MainPage
     {
         public InlineKeyboardMarkup inlineKeyboard;
+        public string text;
         public MainPage()
         {
             inlineKeyboard = new InlineKeyboardMarkup(new[]

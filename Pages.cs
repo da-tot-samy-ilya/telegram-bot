@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace telegram_bot
 {
-    public enum Pages
+    public enum Pages // TODO: мб стоит сделать отдельный класс и список для него
     {
         // все страницы
         main,

@@ -19,6 +19,7 @@ namespace telegram_bot
 
         public Request getAnswerByPage( BotUser user, Request message )
         {
+           
             /*// если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 
             // если message не в дб, а message != user.status && message in dbPages

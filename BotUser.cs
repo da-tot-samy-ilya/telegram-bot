@@ -24,7 +24,7 @@ namespace telegram_bot
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 
-        public BotUser(long userId, string userFirstName, string userPhotoId,
+        public BotUser(long userId, string userFirstName, string userPhotoId = null,
             string userLastName = "", int userAge = 14, string userDiscribition = "")
         {
             id = userId;

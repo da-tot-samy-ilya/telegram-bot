@@ -13,11 +13,11 @@ namespace telegram_bot
     {
         // TODO: нужно настроить класс
         public string text;
-        public long photoId;
+        public string photoId;
         public MessageType type;
         public bool refreshThePage;
 
-        public Request( string userText, MessageType userType, long userPhotoId = 0, bool userRefreshThePage = false )
+        public Request( MessageType userType, string userText = "", string userPhotoId = 0, bool userRefreshThePage = false )
         {
             text = userText;
             photoId = userPhotoId;

@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Microsoft.VisualBasic;
 using System.Threading;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telegram_bot
 {
@@ -47,63 +48,78 @@ namespace telegram_bot
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            if (update.Message is not { } message) return;
+
+            var userId = message.Chat.Id;
+            var userName = message.Chat.Username == null ? "" : message.Chat.Username;
+
+            // TODO: нужно ли так делать? Либо обрабатывать сразу нахождение user в БД?
+            var user = new BotUser(userId, userName, message.Photo[0].FileId);
+
+            // TODO: дописать парамеры Request, стоит ли заходить в if для этого?
+            var answer = _tinder.getAnswerByPage(user, new Request());
+
             // TODO: получение сообщения от функции getAnswerByPage
             if (update.Type == UpdateType.CallbackQuery)
             {
                 // для обработки нажатий на кнопки
-                await HandleCallbackQuery(botClient, update.CallbackQuery);
+                await HandleCallbackQuery(botClient, answer, user, cancellationToken, update.CallbackQuery);
                 return;
             }
 
-
             if (update.Type == UpdateType.Message && update?.Message?.Photo != null)
             {
-                await HandleCallbackQuery(botClient, );
+                await HandlePhotoMessage(botClient, answer, user, cancellationToken);
                 return;
             }
 
             if (update.Type == UpdateType.Message && update?.Message?.Text != null)
             {
-                await HandleTextMessage(botClient, )
-
-               return;
+                await HandleTextMessage(botClient, answer, user, cancellationToken);
+                return;
             }    
         }
 
-        async Task HandleTextMessage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+        async Task HandleTextMessage(ITelegramBotClient botClient, Request message, 
+            BotUser user, CancellationToken cancellationToken)
         {
-            /*if (update.Message is not { } message) return;
-            if (message.Text is not { } messageText) return;*/
-
-            var userId = message.Chat.Id;
-            var userName = message.Chat.Username == null ? "" : message.Chat.Username;
-
             await botClient.SendTextMessageAsync(
-                   chatId: userId,
-                   text: "Hey", // TODO: только нужный текст
+                   chatId: user.id,
+                   text: message.text,
                    cancellationToken: cancellationToken);
             return;
         }
 
-        async Task HandlePhotoMessage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken ) 
+        async Task HandlePhotoMessage( ITelegramBotClient botClient, Request message,
+            BotUser user, CancellationToken cancellationToken ) 
         {
             await botClient.SendPhotoAsync(
-                chatId: message.Chat.Id,
-                photo: message.Photo[0].FileId, // так можно сохранить его Id, чтобы потом опять отправить
+                chatId: user.id,
+                photo: message.photoId,
                 cancellationToken: cancellationToken);
-            return;
+            return; //message.Photo[0].FileId так можно сохранить его Id, чтобы потом опять отправить
         }
 
-        async Task HandleCallbackQuery(ITelegramBotClient botClient, CallbackQuery callbackQuery)
+        async Task HandleCallbackQuery( ITelegramBotClient botClient, Request message,
+            BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery)
         {
-            if () // TODO: если нужно обновить страницу, посмотреть по флагу в Message
+            if (message.refreshThePage)
             {
-                // сначала удалить старую, затем создать новую
+                await botClient.DeleteMessageAsync(
+                    chatId: user.id,
+                    messageId: ); // TODO: message ID
+
+                
+                await botClient.SendTextMessageAsync( // TODO: случай с фоотографией отельно обработать
+                   chatId: user.id,
+                   text: message.text,
+                   replyMarkup: , // TODO: keyboard
+                   cancellationToken: cancellationToken);
+                return;
             }
-            else
-                HandleTextMessage(); // если нужно отправить текстовый ответ
-            //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
-        }
+            await HandleTextMessage(botClient, message, user, cancellationToken); // если нужно отправить текстовый ответ
+            return;
+        } //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
 
         private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) 
         {
