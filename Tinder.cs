@@ -20,15 +20,18 @@ namespace telegram_bot
         public Message getAnswerByPage(BotUser user, Message message)
         {
             // если пользователь перемещается между страницами
+            // зачем тогда ему заходить в switch? 
+            // если message не в дб, а message != user.status && message in dbPages
             if (message in dbPages) // TODO: добавить бд 
             {
                 // TODO: изменить статус пользователя (т.е. его страницу)
             }
 
+            // если просто перход между страницами, то не для каждой страницы нужен getAnswer (ex: main)
             switch (user.status) // TODO: добавить поля в user
             {
-                case "/main":
-                    return _mainPage.getAnswer();
+                case "/main": // нужен ли main?
+                    return _mainPage.getAnswer(); 
                 case "/edit_profile":
                     return null;
                 default:

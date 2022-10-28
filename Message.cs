@@ -13,7 +13,7 @@ namespace telegram_bot
         public string text;
         public string imgId;
         public MessageType type;
-        //public InlineKeyboardMarkup keyBoard;
+        //public InlineKeyboardMarkup keyBoard; - возможно понадобиться для перевачи в Bot и вывода клавиатуры
 
         public Message(string text, string imgId, MessageType type)
         {

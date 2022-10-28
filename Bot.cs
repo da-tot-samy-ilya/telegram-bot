@@ -55,12 +55,15 @@ namespace telegram_bot
 
             if (update.Type == UpdateType.CallbackQuery)
             {
+                // для обработки нажатий на кнопки
                 await HandleCallbackQuery(botClient, update.CallbackQuery);
                 return;
             }
 
             if (update.Type == UpdateType.Message && update?.Message?.Text != null)
             {
+                // для обычных сообщений
+                // TODO: эту часть перенести в HandleMessage
                 if (update.Message is not { } message) return;
                 if (message.Text is not { } messageText) return;
 
@@ -85,6 +88,7 @@ namespace telegram_bot
 
         async Task HandleCallbackQuery(ITelegramBotClient botClient, CallbackQuery callbackQuery)
         {
+            // можешь проверить, пока эта штука после нажатия просто высвечивает уведомление
             await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
         }
 
