@@ -17,9 +17,9 @@ namespace telegram_bot
             // TODO: добавить страницы в конструктор
         }
 
-        public Message getAnswerByPage( BotUser user, Message message )
+        public Request getAnswerByPage( BotUser user, Request message )
         {
-            // если пользователь перемещается между страницами
+            /*// если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 
             // если message не в дб, а message != user.status && message in dbPages
             if (message in dbPages) // TODO: добавить бд 
@@ -37,7 +37,8 @@ namespace telegram_bot
                 default:
                     return null;
 
-            }
+            }*/
+            return null;
         }
 
 
