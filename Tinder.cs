@@ -17,7 +17,7 @@ namespace telegram_bot
             // TODO: добавить страницы в конструктор
         }
 
-        public Message getAnswerByPage(BotUser user, Message message)
+        public Message getAnswerByPage( BotUser user, Message message )
         {
             // если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 
@@ -31,7 +31,7 @@ namespace telegram_bot
             switch (user.status) // TODO: добавить поля в user
             {
                 case "/main": // нужен ли main?
-                    return _mainPage.getAnswer(); 
+                    return _mainPage.getAnswer();
                 case "/edit_profile":
                     return null;
                 default:

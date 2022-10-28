@@ -12,9 +12,7 @@ namespace telegram_bot
     public class TelegramBot
     {
         private DbUsers _dbUsers;
-        private DbKeyWords _dbKeyWords;
-        private Logic _logic;
-        private MainPage _mainPage;
+        private Tinder _tinder;
         
         private readonly string _token;
         private TelegramBotClient _botClient;
@@ -29,10 +27,7 @@ namespace telegram_bot
         public async void Init()
         {
             _dbUsers = new DbUsers("users","json");
-            _dbKeyWords = new DbKeyWords("keyWords", "json");
-            _logic = new Logic(_dbUsers, _dbKeyWords);
-            _mainPage = new MainPage();
-
+            _tinder = new Tinder();
 
             _botClient = new TelegramBotClient(_token);
             _cts = new CancellationTokenSource(); 
@@ -52,7 +47,7 @@ namespace telegram_bot
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-
+            // TODO: получение сообщения от функции getAnswerByPage
             if (update.Type == UpdateType.CallbackQuery)
             {
                 // для обработки нажатий на кнопки
@@ -60,36 +55,54 @@ namespace telegram_bot
                 return;
             }
 
+
+            if (update.Type == UpdateType.Message && update?.Message?.Photo != null)
+            {
+                await HandleCallbackQuery(botClient, );
+                return;
+            }
+
             if (update.Type == UpdateType.Message && update?.Message?.Text != null)
             {
-                // для обычных сообщений
-                // TODO: эту часть перенести в HandleMessage
-                if (update.Message is not { } message) return;
-                if (message.Text is not { } messageText) return;
+                await HandleTextMessage(botClient, )
 
-                var userId = message.Chat.Id;
-                var userName = message.Chat.Username == null ? "" : message.Chat.Username;
-
-                var user = new BotUser(GameStatus.NotPlaying, userId, userName);
-
-                await botClient.SendTextMessageAsync(
-                    chatId: userId,
-                    text: "Hey",
-                    replyMarkup: _mainPage.inlineKeyboard,
-                    cancellationToken: cancellationToken);
-                return;
+               return;
             }    
         }
 
-        async Task HandleMessage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+        async Task HandleTextMessage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
+            /*if (update.Message is not { } message) return;
+            if (message.Text is not { } messageText) return;*/
+
+            var userId = message.Chat.Id;
+            var userName = message.Chat.Username == null ? "" : message.Chat.Username;
+
+            await botClient.SendTextMessageAsync(
+                   chatId: userId,
+                   text: "Hey", // TODO: только нужный текст
+                   cancellationToken: cancellationToken);
+            return;
+        }
+
+        async Task HandlePhotoMessage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken ) 
+        {
+            await botClient.SendPhotoAsync(
+                chatId: message.Chat.Id,
+                photo: message.Photo[0].FileId, // так можно сохранить его Id, чтобы потом опять отправить
+                cancellationToken: cancellationToken);
             return;
         }
 
         async Task HandleCallbackQuery(ITelegramBotClient botClient, CallbackQuery callbackQuery)
         {
-            // можешь проверить, пока эта штука после нажатия просто высвечивает уведомление
-            await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
+            if () // TODO: если нужно обновить страницу, посмотреть по флагу в Message
+            {
+                // сначала удалить старую, затем создать новую
+            }
+            else
+                HandleTextMessage(); // если нужно отправить текстовый ответ
+            //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
         }
 
         private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) 

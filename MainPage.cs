@@ -36,9 +36,9 @@ namespace telegram_bot
 
         }
 
-        public Message getAnswer() // нужна ли? 
+        /*public Message getAnswer() // нужна ли? 
         {
             return null;
-        }
+        }*/
     }
 }
