@@ -7,10 +7,8 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telegram_bot
 {
-    public class MainPage
+    public class MainPage : Page
     {
-        public InlineKeyboardMarkup inlineKeyboard;
-        public string text;
         public MainPage()
         {
             inlineKeyboard = new InlineKeyboardMarkup(new[]
@@ -37,9 +35,7 @@ namespace telegram_bot
 
         }
 
-        /*public Message getAnswer() // нужна ли? 
-        {
-            return null;
-        }*/
+        public override Request getAnswer(bool refreshThePage, BotUser user, Request message, int messageId ) =>
+            new Request(messageId, MessageType.text, text, "", refreshThePage);
     }
 }

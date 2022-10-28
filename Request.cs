@@ -12,13 +12,16 @@ namespace telegram_bot
     public class Request // мб изменить название
     {
         // TODO: нужно настроить класс
+        public int Id;
         public string text;
         public string photoId;
         public MessageType type;
         public bool refreshThePage;
 
-        public Request( MessageType userType, string userText = "", string userPhotoId = 0, bool userRefreshThePage = false )
+        public Request( int messageId, MessageType userType, string userText = "", 
+            string userPhotoId = "", bool userRefreshThePage = false )
         {
+            Id = messageId;
             text = userText;
             photoId = userPhotoId;
             type = userType;

@@ -20,7 +20,7 @@ namespace telegram_bot
         public List<Interests> interests;
         public List<SearchPurpose> searchPurpose;
 
-        public Pages onWhichPage;
+        public Page onWhichPage;
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 
@@ -40,7 +40,7 @@ namespace telegram_bot
             interests = new List<Interests>();
             searchPurpose = new List<SearchPurpose>();
 
-            onWhichPage = Pages.main;
+            onWhichPage = new MainPage(); // TODO: просвоить значение main по-нормальному
         }
 
     }

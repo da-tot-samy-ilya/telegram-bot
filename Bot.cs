@@ -14,6 +14,7 @@ namespace telegram_bot
     {
         private DbUsers _dbUsers;
         private Tinder _tinder;
+        private Pages _pages;
         
         private readonly string _token;
         private TelegramBotClient _botClient;
@@ -29,6 +30,7 @@ namespace telegram_bot
         {
             _dbUsers = new DbUsers("users","json");
             _tinder = new Tinder();
+            _pages = new Pages();   
 
             _botClient = new TelegramBotClient(_token);
             _cts = new CancellationTokenSource(); 
@@ -52,12 +54,13 @@ namespace telegram_bot
 
             var userId = message.Chat.Id;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username;
+            var messageId = message.MessageId;
 
             // TODO: нужно ли так делать? Либо обрабатывать сразу нахождение user в БД?
-            var user = new BotUser(userId, userName, message.Photo[0].FileId);
+            var user = new BotUser(userId, userName); //message.Photo[0].FileId
 
             // TODO: дописать парамеры Request, стоит ли заходить в if для этого?
-            var answer = _tinder.getAnswerByPage(user, new Request());
+            var answer = _tinder.getAnswerByPage(user, new Request( message.MessageId, MessageType.text ));
 
             // TODO: получение сообщения от функции getAnswerByPage
             if (update.Type == UpdateType.CallbackQuery)
@@ -107,13 +110,13 @@ namespace telegram_bot
             {
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
-                    messageId: ); // TODO: message ID
+                    messageId: message.Id); // TODO: message ID
 
                 
                 await botClient.SendTextMessageAsync( // TODO: случай с фоотографией отельно обработать
                    chatId: user.id,
                    text: message.text,
-                   replyMarkup: , // TODO: keyboard
+                   replyMarkup: user.onWhichPage.getKeyBoard(), // TODO: keyboard user.onWhichPage
                    cancellationToken: cancellationToken);
                 return;
             }

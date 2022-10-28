@@ -3,21 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telegram_bot
 {
-    public enum Pages // TODO: мб стоит сделать отдельный класс и список для него
+    public class Pages // TODO: мб стоит сделать отдельный класс и список для него
     {
-        // все страницы
-        main,
-        edit_profile,
-        sent_likes,
-        show_people,
-        recieved_likes,
-        matches,
-        settings,
-        delete_all_data,
-        set_search_filters,
-        notofocations
+        public MainPage _mainPage; // а точно нельзя static? :( С ним очень удобненько?
+
+        public Pages()
+        {
+            _mainPage = new MainPage();
+            // TODO: добавить страницы в конструктор
+        }
     }
 }
+/*
+ main,
+edit_profile,
+sent_likes,
+show_people,
+recieved_likes,
+matches,
+settings,
+delete_all_data,
+set_search_filters,
+notofocations
+ */
