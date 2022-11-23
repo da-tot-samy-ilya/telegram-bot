@@ -115,7 +115,7 @@ namespace telegram_bot
             {
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
-                    messageId: message.Id); // TODO: message ID
+                    messageId: message.oldMessageId); 
 
 
                 await botClient.SendTextMessageAsync( // TODO: случай с фоотографией отельно обработать

@@ -17,17 +17,15 @@ namespace telegram_bot
         public string text;
         public string photoId;
         public MessageType type;
-        public bool refreshThePage;
 
-        public Message( int mesId, long usId, MessageType userType, string userText = "", 
-            string userPhotoId = "", bool userRefreshThePage = false )
+        public Message(int messageId, long userId, MessageType userType, string userText = "", 
+            string userPhotoId = "")
         {
-            this.messageId = mesId;
-            this.userId = usId;
+            this.messageId = messageId;
+            this.userId = userId;
             this.text = userText;
             this.photoId = userPhotoId;
             this.type = userType;
-            this.refreshThePage = userRefreshThePage;
         }
     }
 }
