@@ -9,13 +9,13 @@ namespace telegram_bot
 {
     public class Pages // TODO: мб стоит сделать отдельный класс и список для него
     {
-        public MainPage _mainPage; 
+       /* public MainPage _mainPage; 
 
         public Pages()
         {
             _mainPage = new MainPage();
             // TODO: добавить страницы в конструктор
-        }
+        }*/
     }
 }
 /*

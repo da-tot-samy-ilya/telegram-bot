@@ -24,6 +24,8 @@ namespace telegram_bot
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 
+
+        // TODO: сделать функцию getPage(Pages page) -> Page (типа возвращает страницу по enum`у)   
         public BotUser(long userId, string userFirstName, string userPhotoId = null,
             string userLastName = "", int userAge = 14, string userDiscribition = "")
         {

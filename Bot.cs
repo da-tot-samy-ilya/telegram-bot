@@ -95,6 +95,7 @@ namespace telegram_bot
                    chatId: user.id,
                    text: message.text,
                    cancellationToken: cancellationToken);
+            
             return;
         }
 
@@ -118,7 +119,7 @@ namespace telegram_bot
                     messageId: message.oldMessageId); 
 
 
-                await botClient.SendTextMessageAsync( // TODO: случай с фоотографией отельно обработать
+                await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
                    chatId: user.id,
                    text: message.text,
                    replyMarkup: user.onWhichPage.getKeyBoard(), // TODO: keyboard user.onWhichPage

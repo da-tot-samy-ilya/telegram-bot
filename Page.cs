@@ -9,14 +9,16 @@ namespace telegram_bot
 {
     public abstract class Page
     {
-        protected InlineKeyboardMarkup inlineKeyboard;
-        protected string text;
+        private Dictionary<string, string> keyboard { get; set; }
+        private string text { get; set; }
+        private string imgId { get; set; }
 
-        public InlineKeyboardMarkup getKeyBoard()
+
+        /*public InlineKeyboardMarkup getKeyBoard()
         {
             return this.inlineKeyboard;
-        }
+        }*/
 
-        public abstract Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ); 
+        //public abstract Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ); 
     }
 }

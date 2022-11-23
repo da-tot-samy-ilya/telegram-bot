@@ -19,7 +19,7 @@ namespace telegram_bot
 
         public Answer getAnswerByPage( BotUser user, Message message )
         {
-            var refreshThePage = false;
+            var Answer = new Answer();// TODO: дописать инициализацию
             // если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 
             // если message не в дб, а message != user.status && message in dbPages
