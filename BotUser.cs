@@ -20,7 +20,7 @@ namespace telegram_bot
         public List<Interests> interests;
         public List<SearchPurpose> searchPurpose;
 
-        public Page onWhichPage;
+        public Page onWhichPage; // TODO: enum Pages
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 

@@ -9,7 +9,7 @@ namespace telegram_bot
 {
     public class Pages // TODO: мб стоит сделать отдельный класс и список для него
     {
-        public MainPage _mainPage; // а точно нельзя static? :( С ним очень удобненько?
+        public MainPage _mainPage; 
 
         public Pages()
         {
@@ -19,7 +19,7 @@ namespace telegram_bot
     }
 }
 /*
- main,
+main,
 edit_profile,
 sent_likes,
 show_people,

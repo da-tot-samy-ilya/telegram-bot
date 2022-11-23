@@ -17,7 +17,7 @@ namespace telegram_bot
             pages = new Pages();
         }
 
-        public Request getAnswerByPage( BotUser user, Request message )
+        public Answer getAnswerByPage( BotUser user, Message message )
         {
             var refreshThePage = false;
             // если пользователь перемещается между страницами

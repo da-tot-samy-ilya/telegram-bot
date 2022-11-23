@@ -14,23 +14,18 @@ namespace telegram_bot
     {
         private DbUsers _dbUsers;
         private Tinder _tinder;
-        private Pages _pages;
         
         private readonly string _token;
         private TelegramBotClient _botClient;
         private CancellationTokenSource _cts;
         private ReceiverOptions _receiverOptions;
-        private User _me;
+
         public TelegramBot(string token)
         {
             _token = token;
-        }
-
-        public async void Init()
-        {
+        
             _dbUsers = new DbUsers("users","json");
             _tinder = new Tinder();
-            _pages = new Pages();   
 
             _botClient = new TelegramBotClient(_token);
             _cts = new CancellationTokenSource(); 
@@ -41,26 +36,36 @@ namespace telegram_bot
                 receiverOptions: _receiverOptions, 
                 cancellationToken: _cts.Token
                 );
-            _me = await _botClient.GetMeAsync();
-            Console.WriteLine($"Start listening for @{_me.Username}");
+            Console.WriteLine("Типа запустился");
             Console.ReadLine();
             _cts.Cancel();
         }
 
-
-        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken )
         {
-            if (update.Message is not { } message) return;
-
+            // TODO: ответ на сообщения, обработка кликов
+            var message = update.Message; 
+            
             var userId = message.Chat.Id;
-            var userName = message.Chat.Username == null ? "" : message.Chat.Username;
             var messageId = message.MessageId;
+            var userName = message.Chat.Username == null ? "" : message.Chat.Username; // TODO: потом убрать
+            var user = new BotUser(userId, userName); // TODO: потом убрать
 
-            // TODO: нужно ли так делать? Либо обрабатывать сразу нахождение user в БД?
-            var user = new BotUser(userId, userName); //message.Photo[0].FileId
+            /*// TODO: если пользователь есть в бд, то возращать его, если его нет, то создавать
+            // типа того:
+            if (_dbUsers.FindByKey(userId))
+            {
+                var user = _dbUsers.GetOrCreate(userId);
+            }
+            else
+            {
+                var userName = message.Chat.Username == null ? "" : message.Chat.Username;
+                var user = new BotUser(userId, userName);
+            }*/
 
-            // TODO: дописать парамеры Request, стоит ли заходить в if для этого?
-            var answer = _tinder.getAnswerByPage(user, new Request( message.MessageId, MessageType.text ));
+            var userMessage = new Message(messageId, userId, MessageType.text); // TODO: определение типа сообщения
+
+            var answer = _tinder.getAnswerByPage(user, userMessage); //message.Photo[0].FileId
 
             // TODO: получение сообщения от функции getAnswerByPage
             if (update.Type == UpdateType.CallbackQuery)
@@ -80,11 +85,11 @@ namespace telegram_bot
             {
                 await HandleTextMessage(botClient, answer, user, cancellationToken);
                 return;
-            }    
+            }
         }
 
-        async Task HandleTextMessage(ITelegramBotClient botClient, Request message, 
-            BotUser user, CancellationToken cancellationToken)
+        async Task HandleTextMessage( ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken )
         {
             await botClient.SendTextMessageAsync(
                    chatId: user.id,
@@ -93,8 +98,8 @@ namespace telegram_bot
             return;
         }
 
-        async Task HandlePhotoMessage( ITelegramBotClient botClient, Request message,
-            BotUser user, CancellationToken cancellationToken ) 
+        async Task HandlePhotoMessage( ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken )
         {
             await botClient.SendPhotoAsync(
                 chatId: user.id,
@@ -103,8 +108,8 @@ namespace telegram_bot
             return; //message.Photo[0].FileId так можно сохранить его Id, чтобы потом опять отправить
         }
 
-        async Task HandleCallbackQuery( ITelegramBotClient botClient, Request message,
-            BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery)
+        async Task HandleCallbackQuery( ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery )
         {
             if (message.refreshThePage)
             {
@@ -112,7 +117,7 @@ namespace telegram_bot
                     chatId: user.id,
                     messageId: message.Id); // TODO: message ID
 
-                
+
                 await botClient.SendTextMessageAsync( // TODO: случай с фоотографией отельно обработать
                    chatId: user.id,
                    text: message.text,

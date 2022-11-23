@@ -6,8 +6,7 @@
         {
             var token = GetToken();
             var bot = new TelegramBot(token);
-        
-            bot.Init();
+
             Console.Read();
         }
 

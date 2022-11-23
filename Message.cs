@@ -9,23 +9,25 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telegram_bot
 {
-    public class Request // мб изменить название
+    public class Message // мб изменить название на Message
     {
         // TODO: нужно настроить класс
-        public int Id;
+        public int messageId;
+        public long userId;
         public string text;
         public string photoId;
         public MessageType type;
         public bool refreshThePage;
 
-        public Request( int messageId, MessageType userType, string userText = "", 
+        public Message( int mesId, long usId, MessageType userType, string userText = "", 
             string userPhotoId = "", bool userRefreshThePage = false )
         {
-            Id = messageId;
-            text = userText;
-            photoId = userPhotoId;
-            type = userType;
-            refreshThePage = userRefreshThePage;
+            this.messageId = mesId;
+            this.userId = usId;
+            this.text = userText;
+            this.photoId = userPhotoId;
+            this.type = userType;
+            this.refreshThePage = userRefreshThePage;
         }
     }
 }
