@@ -1,5 +1,4 @@
-﻿using Telegram.Bot.Types;
-using telegram_bot.enums;
+﻿using telegram_bot.enums;
 
 
 namespace telegram_bot
@@ -20,7 +19,7 @@ namespace telegram_bot
         public List<Interests> interests;
         public List<SearchPurpose> searchPurpose;
 
-        public PagesEnum onWhichPage;
+        private PagesEnum onWhichPage;
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 

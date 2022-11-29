@@ -1,55 +1,120 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System.Text.Json;
+﻿using Newtonsoft.Json;
+using Telegram.Bot.Types;
 using telegram_bot.enums;
 
 namespace telegram_bot
 {
-    public class DbUsers
+    public class Db<TKey, TValue> where TKey : notnull
     {
-        private readonly MongoClientSettings _settings;
-        private MongoClient _client;
-        private IMongoDatabase _db;
-        private IMongoCollection<BotUser> _collection;
+        private readonly string _path;
+        protected Dictionary<TKey, TValue> Table;
 
-        public DbUsers( string dbName, string collectionName )
+        protected Db( string dbName, string fileExtention )
         {
-            _settings = MongoClientSettings.FromConnectionString(
-                "mongodb+srv://aboba:1234@tinder.sltinsc.mongodb.net/?retryWrites=true&w=majority");
-            _settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-            _client = new MongoClient(_settings);
-            _db = _client.GetDatabase(dbName); //"tinder-users"
-            _collection = _db.GetCollection<BotUser>(collectionName); //"users"
+            Directory.CreateDirectory(@"..\..\..\db");
+            _path = Path.Join(@"..\..\..\db", dbName + "." + fileExtention);
+            Table = new Dictionary<TKey, TValue>();
         }
-        public void Update( BotUser user )
+        public void Update( TKey id, TValue user )
         {
-            var filter = Builders<BotUser>.Filter.Eq(p => p.id, user.id);
-            _collection.ReplaceOne(filter, user);
-        }
-        public void Add( BotUser user )
-        {
-            if (_collection.CountDocuments(p => p.id == user.id) == 0)
+            if (!FindByKey(id))
             {
-                _collection.InsertOne(user);
+                return;
             }
+            Table = ReadAllTable();
+            Table[id] = user;
+            WriteAllTable(Table);
         }
-        public void Delete( BotUser user )
+        public void Add( TKey id, TValue user )
         {
-            _collection.DeleteMany(p => p.id == user.id);
-        }
-        public List<BotUser> ReadAll()
-        {
-            return _collection.Find(new BsonDocument()).ToList();
-        }
-        public BotUser GetOrCreate( BotUser user )
-        {
-            List<BotUser> users = _collection.Find(p => p.id == user.id).ToList();
-            if (users.Count == 0)
+            if (FindByKey(id))
             {
-                Add(user);
+                return;
+            }
+            Table = ReadAllTable();
+            Table.Add(id, user);
+            WriteAllTable(Table);
+        }
+        public void Delete( TKey id )
+        {
+            if (!FindByKey(id))
+            {
+                return;
+            }
+            Table = ReadAllTable();
+            Table.Remove(id);
+            WriteAllTable(Table);
+        }
+        public bool FindByKey( TKey id )
+        {
+            Table = ReadAllTable();
+            return Table.ContainsKey(id);
+        }
+        public Dictionary<TKey, TValue> ReadAllTable()
+        {
+            var emptyDict = new Dictionary<TKey, TValue>();
+            if (!File.Exists(_path))
+            {
+                File.Create(_path);
+                WriteAllTable(emptyDict);
+                return emptyDict;
+            }
+            var json = File.ReadAllText(_path);
+            if (json == "")
+            {
+                json = "{}";
+                WriteAllTable(emptyDict);
+            }
+            return JsonConvert.DeserializeObject<Dictionary<TKey, TValue>>(json);
+        }
+
+        protected void WriteAllTable( Dictionary<TKey, TValue> dict )
+        {
+            if (!File.Exists(_path))
+            {
+                File.Create(_path);
+            }
+            File.WriteAllText(_path, JsonConvert.SerializeObject(dict));
+        }
+    }
+    public class DbUsers : Db<long, BotUser>
+    {
+        public DbUsers( string dbName, string fileExtention ) : base(dbName, fileExtention) { }
+        public BotUser GetOrCreate( long id, BotUser user )
+        {
+            if (FindByKey(id))
+            {
+                return GetByKey(id);
+            }
+            else
+            {
+                var emptyGame = new Game(0, 0, 0, (int)id);
+                var newUser = new BotUser(GameStatus.NotPlaying, id, user.Name, emptyGame);
+                Add(id, newUser);
                 return user;
             }
-            return users[0];
+        }
+        public BotUser GetByKey( long id )
+        {
+            if (!FindByKey(id))
+            {
+                return null;
+            }
+            Table = ReadAllTable();
+            return Table[id];
+        }
+    }
+    public class DbKeyWords : Db<string, string>
+    {
+        public DbKeyWords( string dbName, string fileExtention ) : base(dbName, fileExtention) { }
+        public string GetByKey( string key )
+        {
+            Table = ReadAllTable();
+            if (!FindByKey(key))
+            {
+                return null;
+            }
+            return Table[key];
         }
     }
 }
