@@ -9,9 +9,12 @@ namespace telegram_bot
 {
     public class MainPage : Page
     {
+
         public MainPage()
         {
-            inlineKeyboard = new InlineKeyboardMarkup(new[]
+            
+
+            /*inlineKeyboard = new InlineKeyboardMarkup(new[]
             {
                 new[]
                 {
@@ -35,13 +38,13 @@ namespace telegram_bot
                     InlineKeyboardButton.WithCallbackData(text: "Редактировать профиль", callbackData: "/edit_profile"),
                 }
 
-            });
+            });*/
 
 
 
         }
 
-        public override Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ) =>
-            new Request(messageId, MessageType.text, text, "", refreshThePage);
+        /*public override Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ) =>
+            new Request(messageId, MessageType.text, text, "", refreshThePage);*/
     }
 }

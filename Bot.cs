@@ -13,7 +13,8 @@ namespace telegram_bot
     public class TelegramBot
     {
         private DbUsers _dbUsers;
-        private Tinder _tinder;
+        private Tinder _tinder;       
+        private int chatMessageId; // Id сообщения, которое сейчас на экране
         
         private readonly string _token;
         private TelegramBotClient _botClient;
@@ -126,7 +127,8 @@ namespace telegram_bot
                    cancellationToken: cancellationToken);
                 return;
             }
-            await HandleTextMessage(botClient, message, user, cancellationToken); // если нужно отправить текстовый ответ
+            else
+                await HandleTextMessage(botClient, message, user, cancellationToken); // если нужно отправить текстовый ответ
             return;
         } //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
 

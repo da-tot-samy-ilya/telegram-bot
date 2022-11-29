@@ -11,25 +11,34 @@ namespace telegram_bot
     {
         public Dictionary<string, string> keyboard;
 
+        InlineKeyboardMarkup[][] inlineKeyboard;
+
         // TODO: добавить enum, в зависимоти от которого будет разными видеми разсположения кнопок
         public InlineKeyboard(Dictionary<string, string> keyboard)
         {
             this.keyboard = keyboard;
+            //var countOfKey = keyboard.Count;
         }
-        public InlineKeyboardMarkup[][] GetInlineKeyboard( Dictionary<string, string> keyboard) // TODO: допилить функцию для разных случаев
+        public InlineKeyboardMarkup[][] GetInlineKeyboard() 
         {
-            var countOfKey = keyboard.Count;
+            return this.inlineKeyboard;
+        }
 
-            var keyboardInline = new InlineKeyboardMarkup[1][];
-            var keyboardButtons = new InlineKeyboardButton[countOfKey];
+        public InlineKeyboardMarkup[][] GenerateKeyboard()
+        {
+            // TODO: возможно стоит перенести в другую функцию
+            var keyboardInline = new InlineKeyboardMarkup[1][]; // TODO: допилить функцию для разных случаев
+            //var keyboardButtons = new InlineKeyboardButton[countOfKey];
             var i = 0;
             foreach (var button in keyboard)
             {
                 keyboardInline[0][i] = new[] { InlineKeyboardButton.WithCallbackData(text: button.Key, callbackData: button.Value) };
                 i++;
             }
-            return keyboardInline;
+            this.inlineKeyboard = keyboardInline;
+            return this.inlineKeyboard;
         }
-        
+
+        // TODO: мб стоит сюда добавить функцию для вывода клавиатуры пользователю?
     }
 }
