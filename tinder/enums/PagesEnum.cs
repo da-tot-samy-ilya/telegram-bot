@@ -1,5 +1,4 @@
-﻿
-namespace telegram_bot.enums
+﻿namespace telegram_bot.tinder.enums
 {
     enum PagesEnum
     {

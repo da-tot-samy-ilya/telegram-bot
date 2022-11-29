@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Requests;
-using Telegram.Bot.Types;
+﻿using telegram_bot.bot;
+using telegram_bot.tinder.pages_classes;
 
-namespace telegram_bot
+namespace telegram_bot.tinder
 {
     public class Tinder
     {
@@ -17,7 +12,7 @@ namespace telegram_bot
             pages = new Pages();
         }
 
-        public Answer getAnswerByPage( BotUser user, Message message )
+        public Answer getAnswerByPage(BotUser user, Message message)
         {
             var Answer = new Answer();// TODO: дописать инициализацию
             // если пользователь перемещается между страницами
@@ -34,17 +29,17 @@ namespace telegram_bot
 
             return user.onWhichPage.getAnswer(refreshThePage, user, message, message.Id);
 
-           /* switch (user.onWhichPage) // TODO: добавить поля в user
-            {
-                case MainPage: // нужен ли main?
-                    
-                case Pages._editProfile:
-                    return null;
-                default:
-                    return null;
+            /* switch (user.onWhichPage) // TODO: добавить поля в user
+             {
+                 case MainPage: // нужен ли main?
 
-            }
-            return null;*/
+                 case Pages._editProfile:
+                     return null;
+                 default:
+                     return null;
+
+             }
+             return null;*/
         }
 
 

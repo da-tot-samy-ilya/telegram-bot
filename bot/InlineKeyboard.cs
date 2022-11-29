@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot.Types.ReplyMarkups;
+﻿using Telegram.Bot.Types.ReplyMarkups;
 
-namespace telegram_bot
+namespace telegram_bot.bot
 {
     public class InlineKeyboard
     {
@@ -19,9 +14,9 @@ namespace telegram_bot
             this.keyboard = keyboard;
             //var countOfKey = keyboard.Count;
         }
-        public InlineKeyboardMarkup[][] GetInlineKeyboard() 
+        public InlineKeyboardMarkup[][] GetInlineKeyboard()
         {
-            return this.inlineKeyboard;
+            return inlineKeyboard;
         }
 
         public InlineKeyboardMarkup[][] GenerateKeyboard()
@@ -35,8 +30,8 @@ namespace telegram_bot
                 keyboardInline[0][i] = new[] { InlineKeyboardButton.WithCallbackData(text: button.Key, callbackData: button.Value) };
                 i++;
             }
-            this.inlineKeyboard = keyboardInline;
-            return this.inlineKeyboard;
+            inlineKeyboard = keyboardInline;
+            return inlineKeyboard;
         }
 
         // TODO: мб стоит сюда добавить функцию для вывода клавиатуры пользователю?

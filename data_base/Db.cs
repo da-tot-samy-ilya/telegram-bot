@@ -1,21 +1,21 @@
 ﻿using Newtonsoft.Json;
 using Telegram.Bot.Types;
-using telegram_bot.enums;
+using telegram_bot.Tinder.enums;
 
-namespace telegram_bot
+namespace telegram_bot.data_base
 {
     public class Db<TKey, TValue> where TKey : notnull
     {
         private readonly string _path;
         protected Dictionary<TKey, TValue> Table;
 
-        protected Db( string dbName, string fileExtention )
+        protected Db(string dbName, string fileExtention)
         {
             Directory.CreateDirectory(@"..\..\..\db");
             _path = Path.Join(@"..\..\..\db", dbName + "." + fileExtention);
             Table = new Dictionary<TKey, TValue>();
         }
-        public void Update( TKey id, TValue user )
+        public void Update(TKey id, TValue user)
         {
             if (!FindByKey(id))
             {
@@ -25,7 +25,7 @@ namespace telegram_bot
             Table[id] = user;
             WriteAllTable(Table);
         }
-        public void Add( TKey id, TValue user )
+        public void Add(TKey id, TValue user)
         {
             if (FindByKey(id))
             {
@@ -35,7 +35,7 @@ namespace telegram_bot
             Table.Add(id, user);
             WriteAllTable(Table);
         }
-        public void Delete( TKey id )
+        public void Delete(TKey id)
         {
             if (!FindByKey(id))
             {
@@ -45,7 +45,7 @@ namespace telegram_bot
             Table.Remove(id);
             WriteAllTable(Table);
         }
-        public bool FindByKey( TKey id )
+        public bool FindByKey(TKey id)
         {
             Table = ReadAllTable();
             return Table.ContainsKey(id);
@@ -68,7 +68,7 @@ namespace telegram_bot
             return JsonConvert.DeserializeObject<Dictionary<TKey, TValue>>(json);
         }
 
-        protected void WriteAllTable( Dictionary<TKey, TValue> dict )
+        protected void WriteAllTable(Dictionary<TKey, TValue> dict)
         {
             if (!File.Exists(_path))
             {
@@ -79,8 +79,8 @@ namespace telegram_bot
     }
     public class DbUsers : Db<long, BotUser>
     {
-        public DbUsers( string dbName, string fileExtention ) : base(dbName, fileExtention) { }
-        public BotUser GetOrCreate( long id, BotUser user )
+        public DbUsers(string dbName, string fileExtention) : base(dbName, fileExtention) { }
+        public BotUser GetOrCreate(long id, BotUser user)
         {
             if (FindByKey(id))
             {
@@ -94,7 +94,7 @@ namespace telegram_bot
                 return user;
             }
         }
-        public BotUser GetByKey( long id )
+        public BotUser GetByKey(long id)
         {
             if (!FindByKey(id))
             {
@@ -106,8 +106,8 @@ namespace telegram_bot
     }
     public class DbKeyWords : Db<string, string>
     {
-        public DbKeyWords( string dbName, string fileExtention ) : base(dbName, fileExtention) { }
-        public string GetByKey( string key )
+        public DbKeyWords(string dbName, string fileExtention) : base(dbName, fileExtention) { }
+        public string GetByKey(string key)
         {
             Table = ReadAllTable();
             if (!FindByKey(key))

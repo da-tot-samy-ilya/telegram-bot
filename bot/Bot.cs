@@ -1,21 +1,20 @@
-﻿using telegram_bot.enums;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Microsoft.VisualBasic;
-using System.Threading;
-using Telegram.Bot.Types.ReplyMarkups;
+using telegram_bot.data_base;
+using telegram_bot.tinder.enums;
+using telegram_bot.tinder;
 
-namespace telegram_bot
+namespace telegram_bot.bot
 {
     public class TelegramBot
     {
         private DbUsers _dbUsers;
-        private Tinder _tinder;       
+        private Tinder _tinder;
         private int chatMessageId; // Id сообщения, которое сейчас на экране
-        
+
         private readonly string _token;
         private TelegramBotClient _botClient;
         private CancellationTokenSource _cts;
@@ -24,17 +23,17 @@ namespace telegram_bot
         public TelegramBot(string token)
         {
             _token = token;
-        
-            _dbUsers = new DbUsers("users","json");
+
+            _dbUsers = new DbUsers("users", "json");
             _tinder = new Tinder();
 
             _botClient = new TelegramBotClient(_token);
-            _cts = new CancellationTokenSource(); 
+            _cts = new CancellationTokenSource();
             _receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
             _botClient.StartReceiving(
-                updateHandler: HandleUpdateAsync, 
-                pollingErrorHandler: HandlePollingErrorAsync, 
-                receiverOptions: _receiverOptions, 
+                updateHandler: HandleUpdateAsync,
+                pollingErrorHandler: HandlePollingErrorAsync,
+                receiverOptions: _receiverOptions,
                 cancellationToken: _cts.Token
                 );
             Console.WriteLine("Типа запустился");
@@ -42,11 +41,11 @@ namespace telegram_bot
             _cts.Cancel();
         }
 
-        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken )
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // TODO: ответ на сообщения, обработка кликов
-            var message = update.Message; 
-            
+            var message = update.Message;
+
             var userId = message.Chat.Id;
             var messageId = message.MessageId;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username; // TODO: потом убрать
@@ -89,19 +88,19 @@ namespace telegram_bot
             }
         }
 
-        async Task HandleTextMessage( ITelegramBotClient botClient, Answer message,
-            BotUser user, CancellationToken cancellationToken )
+        async Task HandleTextMessage(ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken)
         {
             await botClient.SendTextMessageAsync(
                    chatId: user.id,
                    text: message.text,
                    cancellationToken: cancellationToken);
-            
+
             return;
         }
 
-        async Task HandlePhotoMessage( ITelegramBotClient botClient, Answer message,
-            BotUser user, CancellationToken cancellationToken )
+        async Task HandlePhotoMessage(ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken)
         {
             await botClient.SendPhotoAsync(
                 chatId: user.id,
@@ -110,14 +109,14 @@ namespace telegram_bot
             return; //message.Photo[0].FileId так можно сохранить его Id, чтобы потом опять отправить
         }
 
-        async Task HandleCallbackQuery( ITelegramBotClient botClient, Answer message,
-            BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery )
+        async Task HandleCallbackQuery(ITelegramBotClient botClient, Answer message,
+            BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery)
         {
             if (message.refreshThePage)
             {
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
-                    messageId: message.oldMessageId); 
+                    messageId: message.oldMessageId);
 
 
                 await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
@@ -132,9 +131,9 @@ namespace telegram_bot
             return;
         } //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
 
-        private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken) 
+        private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            var errorMessage = exception switch 
+            var errorMessage = exception switch
             {
                 ApiRequestException apiRequestException
                     => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
@@ -144,7 +143,7 @@ namespace telegram_bot
             Console.WriteLine(errorMessage);
             return Task.CompletedTask;
         }
-    } 
+    }
 }
 
 

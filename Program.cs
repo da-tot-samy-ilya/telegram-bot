@@ -1,4 +1,4 @@
-﻿namespace telegram_bot
+﻿namespace telegram_bot.bot
 {
     public class Program
     {

@@ -1,7 +1,6 @@
-﻿using telegram_bot.enums;
+﻿using telegram_bot.tinder.enums;
 
-
-namespace telegram_bot
+namespace telegram_bot.bot
 {
     public class BotUser
     {
