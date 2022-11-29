@@ -2,5 +2,5 @@
 /.vs/
 /bin/
 /obj/
-/db/users.json
-/db/token.txt
+/data_base/db/users.json
+/data_base/db/token.txt
