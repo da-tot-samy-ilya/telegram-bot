@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace telegram_bot
+namespace telegram_bot.Pages_classes
 {
     public abstract class Page
     {

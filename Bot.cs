@@ -123,7 +123,7 @@ namespace telegram_bot
                 await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
                    chatId: user.id,
                    text: message.text,
-                   replyMarkup: user.onWhichPage.getKeyBoard(), // TODO: keyboard user.onWhichPage
+                   replyMarkup: , // TODO: keyboard user.onWhichPage
                    cancellationToken: cancellationToken);
                 return;
             }

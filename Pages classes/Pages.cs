@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.ReplyMarkups;
+using telegram_bot.Pages_classes;
 
 namespace telegram_bot
 {
@@ -18,15 +19,3 @@ namespace telegram_bot
         }
     }
 }
-/*
-main,
-edit_profile,
-sent_likes,
-show_people,
-recieved_likes,
-matches,
-settings,
-delete_all_data,
-set_search_filters,
-notofocations
- */
