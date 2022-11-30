@@ -11,14 +11,14 @@ namespace telegram_bot.bot
         public string photoId;
         public MessageType type;
 
-        public Message(int messageId, long userId, MessageType userType, string userText = "",
-            string userPhotoId = "")
+        public Message(int messageId, long userId, MessageType type, string text = "",
+            string photoId = "")
         {
             this.messageId = messageId;
             this.userId = userId;
-            text = userText;
-            photoId = userPhotoId;
-            type = userType;
+            this.text = text;
+            this.photoId = photoId;
+            this.type = type;
         }
     }
 }
