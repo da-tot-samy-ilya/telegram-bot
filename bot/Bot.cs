@@ -11,7 +11,7 @@ namespace telegram_bot.bot
 {
     public class TelegramBot
     {
-        private DbUsers _dbUsers; // ABOBA
+        private DbUsers _dbUsers;
         private Tinder _tinder;
         private int chatMessageId; // Id сообщения, которое сейчас на экране
 
@@ -49,22 +49,8 @@ namespace telegram_bot.bot
             var userId = message.Chat.Id;
             var messageId = message.MessageId;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username; // TODO: потом убрать
-            /*
-            var user = new BotUser(userId, userName); // TODO: потом убрать
-            */
-
-            /*// TODO: если пользователь есть в бд, то возращать его, если его нет, то создавать
-            // типа того:
-            if (_dbUsers.FindByKey(userId))
-            {
-                var user = _dbUsers.GetOrCreate(userId);
-            }
-            else
-            {
-                var userName = message.Chat.Username == null ? "" : message.Chat.Username;
-                var user = new BotUser(userId, userName);
-            }*/
-            var user = _dbUsers.GetOrCreate(userId, new BotUser(userId, userName));
+            
+            var user = _dbUsers.GetOrCreate(userId, userName);
             
             
             var userMessage = new Message(messageId, userId, MessageType.text); // TODO: определение типа сообщения

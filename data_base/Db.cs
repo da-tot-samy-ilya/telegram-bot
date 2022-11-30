@@ -95,7 +95,7 @@ namespace telegram_bot.data_base
         {
         }
 
-        public BotUser GetOrCreate(long id, BotUser user)
+        public BotUser GetOrCreate(long id, string firstName)
         {
             if (FindByKey(id))
             {
@@ -103,9 +103,9 @@ namespace telegram_bot.data_base
             }
             else
             {
-                var newUser = new BotUser(id, user.firstName, user.photoId);
+                var newUser = new BotUser(id, firstName);
                 Add(id, newUser);
-                return user;
+                return newUser;
             }
         }
 
