@@ -15,7 +15,8 @@ namespace telegram_bot.tinder
         public Answer getAnswerByPage(BotUser user, Message message)
         {
             return new Answer(false, message.messageId, message.messageId, user.id, 
-                enums.MessageType.text,"Hey","", pages._mainPage.getKeyboard());
+                enums.MessageType.text,"Hey","", pages._mainPage.getKeyboard(),
+                pages._mainPage.row, pages._mainPage.column);
            /* // если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 
             // если message не в дб, а message != user.status && message in dbPages

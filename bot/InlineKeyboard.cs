@@ -6,7 +6,7 @@ namespace telegram_bot.bot
     {
         public Dictionary<string, string> keyboard;
 
-        InlineKeyboardMarkup[][] inlineKeyboard;
+        public InlineKeyboardMarkup inlineKeyboard;
 
         // TODO: добавить enum, в зависимоти от которого будет разными видеми разсположения кнопок
         public InlineKeyboard(Dictionary<string, string> keyboard)
@@ -14,23 +14,32 @@ namespace telegram_bot.bot
             this.keyboard = keyboard;
             //var countOfKey = keyboard.Count;
         }
-        public InlineKeyboardMarkup[][] GetInlineKeyboard()
+        public InlineKeyboardMarkup GetInlineKeyboard()
         {
             return inlineKeyboard;
         }
 
-        public void GenerateKeyboard()
+        public void GenerateKeyboard(int rows, int columns)
         {
             // TODO: возможно стоит перенести в другую функцию
-            var keyboardInline = new InlineKeyboardMarkup[1][]; // TODO: допилить функцию для разных случаев
-            //var keyboardButtons = new InlineKeyboardButton[countOfKey];
-            var i = 0;
-            foreach (var button in keyboard)
+            var rowsButton = new List<List<InlineKeyboardButton>>();
+
+            int iterator = 0;
+            var keys = keyboard.Keys.ToArray();
+
+            for (var i = 0; i < rows; i++)
             {
-                keyboardInline[0][i] = new[] { InlineKeyboardButton.WithCallbackData(text: button.Key, callbackData: button.Value) };
-                i++;
+                var buttons = new List<InlineKeyboardButton>();
+                for (var j = 0; j < columns; j++)
+                {
+                    var button = keys[iterator];
+                    buttons.Add(InlineKeyboardButton.WithCallbackData(text: button, callbackData: keyboard[button]));
+                    iterator++;
+                }
+                rowsButton.Add(buttons);
             }
-            inlineKeyboard = keyboardInline;
+            // TODO: допилить функцию для разных случаев
+            inlineKeyboard = new InlineKeyboardMarkup(rowsButton);
         }
 
         // TODO: мб стоит сюда добавить функцию для вывода клавиатуры пользователю?

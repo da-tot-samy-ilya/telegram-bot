@@ -8,7 +8,10 @@ namespace telegram_bot.tinder.pages_classes
         {
             this.text = text;
             this.imgId = imgId;
-            this.keyboard = new Dictionary<string, string>
+            row = 3;
+            column = 2;
+
+            keyboard = new Dictionary<string, string>
             {
                 ["Показать людей"] = "/show_people",
                 ["Мэтчи"] = "/matches",
@@ -18,6 +21,12 @@ namespace telegram_bot.tinder.pages_classes
                 ["Редактировать профиль"] = "/edit_profile",
             };
         }
+
+        /*public override int row { get => row  ;
+                set => this.row; }
+
+        public override int column { get => column;
+            set => throw new NotSupportedException(); }*/
 
         public override Answer getAnswer()
         {

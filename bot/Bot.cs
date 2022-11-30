@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using System;
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -58,7 +59,7 @@ namespace telegram_bot.bot
             var answer = _tinder.getAnswerByPage(user, userMessage); //message.Photo[0].FileId
 
             // TODO: получение сообщения от функции getAnswerByPage
-            if (update.Type == UpdateType.CallbackQuery)
+            if (update.Type == UpdateType.CallbackQuery || (update.Type == UpdateType.Message && update?.Message?.Text == "/start"))
             {
                 // для обработки нажатий на кнопки
                 await HandleCallbackQuery(botClient, answer, user, cancellationToken, update.CallbackQuery);
@@ -102,10 +103,24 @@ namespace telegram_bot.bot
         async Task HandleCallbackQuery(ITelegramBotClient botClient, Answer message,
             BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery)
         {
-            if (message.refreshThePage)
+            var inlineKeyboard = new InlineKeyboard(message.keyBoard);
+            inlineKeyboard.GenerateKeyboard(message.row, message.column);
+            await botClient.DeleteMessageAsync(
+                chatId: user.id,
+                messageId: message.oldMessageId);
+
+
+            await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
+               chatId: user.id,
+               text: message.text,
+               replyMarkup: inlineKeyboard.GetInlineKeyboard(), // TODO: keyboard user.onWhichPage
+               cancellationToken: cancellationToken);
+            return;
+
+            /*if (message.refreshThePage)
             {
                 var inlineKeyboard = new InlineKeyboard(message.keyBoard);
-                inlineKeyboard.GenerateKeyboard();
+                inlineKeyboard.GenerateKeyboard(message.row, message.column);
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
                     messageId: message.oldMessageId);
@@ -119,7 +134,7 @@ namespace telegram_bot.bot
                 return;
             }
             else
-                await HandleTextMessage(botClient, message, user, cancellationToken); // если нужно отправить текстовый ответ
+                await HandleTextMessage(botClient, message, user, cancellationToken); */// если нужно отправить текстовый ответ
             return;
         } //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
 

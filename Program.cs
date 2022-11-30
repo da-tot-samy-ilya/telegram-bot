@@ -12,7 +12,7 @@
 
         public static string GetToken()
         {
-            var token = File.ReadAllText(@"..\..\..\db\token.txt");
+            var token = File.ReadAllText(@"..\..\..\data_base\db\token.txt");
             return token;
         }
     }
