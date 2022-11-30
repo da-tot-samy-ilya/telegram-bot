@@ -12,9 +12,9 @@ namespace telegram_bot.tinder
             pages = new Pages();
         }
 
-        public Answer getAnswerByPage(BotUser user, Message message)
+        public Answer getAnswerByPage(BotUser user, Message message, int oldMessage)
         {
-            return new Answer(false, message.messageId, message.messageId, user.id, 
+            return new Answer(false, oldMessage, message.messageId, user.id, 
                 enums.MessageType.text,"Hey","", pages._mainPage.getKeyboard(),
                 pages._mainPage.row, pages._mainPage.column);
            /* // если пользователь перемещается между страницами

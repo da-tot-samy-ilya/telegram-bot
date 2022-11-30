@@ -7,12 +7,12 @@ namespace telegram_bot.tinder.pages_classes
         protected Dictionary<string, string> keyboard;
         protected string text;
         protected string imgId;
-        public int row { get; set; }
-        public int column { get; set; }
+        public int row { get; protected set; }
+        public int column { get; protected set; }
 
         public Dictionary<string, string> getKeyboard()
         {
-            return this.keyboard;
+            return keyboard;
         }
 
         public abstract Answer getAnswer();
