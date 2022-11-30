@@ -19,7 +19,7 @@ namespace telegram_bot.bot
             return inlineKeyboard;
         }
 
-        public InlineKeyboardMarkup[][] GenerateKeyboard()
+        public void GenerateKeyboard()
         {
             // TODO: возможно стоит перенести в другую функцию
             var keyboardInline = new InlineKeyboardMarkup[1][]; // TODO: допилить функцию для разных случаев
@@ -31,7 +31,6 @@ namespace telegram_bot.bot
                 i++;
             }
             inlineKeyboard = keyboardInline;
-            return inlineKeyboard;
         }
 
         // TODO: мб стоит сюда добавить функцию для вывода клавиатуры пользователю?

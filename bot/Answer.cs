@@ -6,18 +6,15 @@ namespace telegram_bot.bot
     {
         public bool refreshThePage;
         public int oldMessageId;
-        //public Dictionary<string, string> keyBoard;
+        public Dictionary<string, string> keyBoard;
 
-        public Answer(bool userRefreshThePage, int oldMessageId, int messageId, long userId,
-            MessageType userType, string userText = "", string userPhotoId = "")
+        public Answer(bool refreshThePage, int oldMessageId, int messageId, long userId,
+            MessageType type, string text = "", string photoId = "", 
+            Dictionary<string, string> keyBoard = null ): base(messageId, userId, type, text,photoId)
         {
-            refreshThePage = userRefreshThePage;
+            this.refreshThePage = refreshThePage;
             this.oldMessageId = oldMessageId;
-            this.messageId = messageId;
-            this.userId = userId;
-            text = userText;
-            photoId = userPhotoId;
-            type = userType;
+            this.keyBoard = keyBoard;
         }
 
     }

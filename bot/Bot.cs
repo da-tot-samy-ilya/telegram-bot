@@ -4,14 +4,14 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using telegram_bot.data_base;
-using telegram_bot.tinder.enums;
 using telegram_bot.tinder;
+using telegram_bot.tinder.enums;
 
 namespace telegram_bot.bot
 {
     public class TelegramBot
     {
-        private DbUsers _dbUsers; // ABOBA
+        private DbUsers _dbUsers; 
         private Tinder _tinder;
         private int chatMessageId; // Id сообщения, которое сейчас на экране
 
@@ -49,25 +49,11 @@ namespace telegram_bot.bot
             var userId = message.Chat.Id;
             var messageId = message.MessageId;
             var userName = message.Chat.Username == null ? "" : message.Chat.Username; // TODO: потом убрать
-            /*
-            var user = new BotUser(userId, userName); // TODO: потом убрать
-            */
-
-            /*// TODO: если пользователь есть в бд, то возращать его, если его нет, то создавать
-            // типа того:
-            if (_dbUsers.FindByKey(userId))
-            {
-                var user = _dbUsers.GetOrCreate(userId);
-            }
-            else
-            {
-                var userName = message.Chat.Username == null ? "" : message.Chat.Username;
-                var user = new BotUser(userId, userName);
-            }*/
-            var user = _dbUsers.GetOrCreate(userId, new BotUser(userId, userName));
+            
+            var user = _dbUsers.GetOrCreate(userId, new BotUser(userId, userName));// TODO: исправить это
             
             
-            var userMessage = new Message(messageId, userId, MessageType.text); // TODO: определение типа сообщения
+            var userMessage = new Message(messageId, userId, tinder.enums.MessageType.text); // TODO: определение типа сообщения
 
             var answer = _tinder.getAnswerByPage(user, userMessage); //message.Photo[0].FileId
 
@@ -118,6 +104,8 @@ namespace telegram_bot.bot
         {
             if (message.refreshThePage)
             {
+                var inlineKeyboard = new InlineKeyboard(message.keyBoard);
+                inlineKeyboard.GenerateKeyboard();
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
                     messageId: message.oldMessageId);
@@ -126,7 +114,7 @@ namespace telegram_bot.bot
                 await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
                    chatId: user.id,
                    text: message.text,
-                   replyMarkup: , // TODO: keyboard user.onWhichPage
+                   replyMarkup: inlineKeyboard.GetInlineKeyboard(), // TODO: keyboard user.onWhichPage
                    cancellationToken: cancellationToken);
                 return;
             }

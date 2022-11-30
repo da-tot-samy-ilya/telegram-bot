@@ -1,17 +1,18 @@
-﻿namespace telegram_bot.tinder.pages_classes
+﻿using telegram_bot.bot;
+
+namespace telegram_bot.tinder.pages_classes
 {
     public abstract class Page
     {
-        private Dictionary<string, string> keyboard { get; set; }
-        private string text { get; set; }
-        private string imgId { get; set; }
+        protected Dictionary<string, string> keyboard;
+        protected string text;
+        protected string imgId;
 
-
-        /*public InlineKeyboardMarkup getKeyBoard()
+        public Dictionary<string, string> getKeyboard()
         {
-            return this.inlineKeyboard;
-        }*/
+            return this.keyboard;
+        }
 
-        //public abstract Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ); 
+        public abstract Answer getAnswer();
     }
 }
