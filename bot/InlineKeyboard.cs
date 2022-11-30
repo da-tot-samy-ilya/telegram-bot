@@ -38,10 +38,7 @@ namespace telegram_bot.bot
                 }
                 rowsButton.Add(buttons);
             }
-            // TODO: допилить функцию для разных случаев
             inlineKeyboard = new InlineKeyboardMarkup(rowsButton);
         }
-
-        // TODO: мб стоит сюда добавить функцию для вывода клавиатуры пользователю?
     }
 }

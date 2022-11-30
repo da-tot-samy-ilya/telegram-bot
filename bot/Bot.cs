@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -44,8 +45,14 @@ namespace telegram_bot.bot
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            if (update.CallbackQuery != null && Enum.IsDefined(typeof(PagesEnum), update.CallbackQuery.Data.Substring(1)))
+            {
+                Console.WriteLine(update.CallbackQuery.Data);
+                return; 
+            }
+                
             // TODO: ответ на сообщения, обработка кликов
-            var message = update.Message;
+            /*var message = update.Message;
 
             var userId = message.Chat.Id;
             var messageId = message.MessageId;
@@ -56,87 +63,89 @@ namespace telegram_bot.bot
             
             var userMessage = new Message(messageId, userId, tinder.enums.MessageType.text); // TODO: определение типа сообщения
 
-            var answer = _tinder.getAnswerByPage(user, userMessage); //message.Photo[0].FileId
+            var answer = _tinder.getAnswerByPage(user, userMessage, chatMessageId); //message.Photo[0].FileId
 
             // TODO: получение сообщения от функции getAnswerByPage
-            if (update.Type == UpdateType.CallbackQuery || (update.Type == UpdateType.Message && update?.Message?.Text == "/start"))
+            if (update.Type == UpdateType.Message && update?.Message?.Text == "/start")
+            {
+                await SendIlineKeyboard(botClient, answer, user, cancellationToken);
+            }
+
+            else if (update.Type == UpdateType.CallbackQuery)
             {
                 // для обработки нажатий на кнопки
                 await HandleCallbackQuery(botClient, answer, user, cancellationToken, update.CallbackQuery);
                 return;
             }
 
-            if (update.Type == UpdateType.Message && update?.Message?.Photo != null)
+            else if(update.Type == UpdateType.Message && update?.Message?.Photo != null)
             {
                 await HandlePhotoMessage(botClient, answer, user, cancellationToken);
                 return;
             }
 
-            if (update.Type == UpdateType.Message && update?.Message?.Text != null)
+            else if(update.Type == UpdateType.Message && update?.Message?.Text != null)
             {
                 await HandleTextMessage(botClient, answer, user, cancellationToken);
                 return;
-            }
+            }*/
         }
 
-        async Task HandleTextMessage(ITelegramBotClient botClient, Answer message,
+        async Task HandleTextMessage(ITelegramBotClient botClient, Answer answer,
             BotUser user, CancellationToken cancellationToken)
         {
             await botClient.SendTextMessageAsync(
                    chatId: user.id,
-                   text: message.text,
+                   text: answer.text,
                    cancellationToken: cancellationToken);
 
             return;
         }
 
-        async Task HandlePhotoMessage(ITelegramBotClient botClient, Answer message,
+        async Task HandlePhotoMessage(ITelegramBotClient botClient, Answer answer,
             BotUser user, CancellationToken cancellationToken)
         {
             await botClient.SendPhotoAsync(
                 chatId: user.id,
-                photo: message.photoId,
+                photo: answer.photoId,
                 cancellationToken: cancellationToken);
             return; //message.Photo[0].FileId так можно сохранить его Id, чтобы потом опять отправить
         }
 
-        async Task HandleCallbackQuery(ITelegramBotClient botClient, Answer message,
+        async Task HandleCallbackQuery(ITelegramBotClient botClient, Answer answer,
             BotUser user, CancellationToken cancellationToken, CallbackQuery callbackQuery)
         {
-            var inlineKeyboard = new InlineKeyboard(message.keyBoard);
-            inlineKeyboard.GenerateKeyboard(message.row, message.column);
-            await botClient.DeleteMessageAsync(
-                chatId: user.id,
-                messageId: message.oldMessageId);
-
-
-            await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
-               chatId: user.id,
-               text: message.text,
-               replyMarkup: inlineKeyboard.GetInlineKeyboard(), // TODO: keyboard user.onWhichPage
-               cancellationToken: cancellationToken);
-            return;
-
-            /*if (message.refreshThePage)
+            if (answer.refreshThePage)
             {
-                var inlineKeyboard = new InlineKeyboard(message.keyBoard);
-                inlineKeyboard.GenerateKeyboard(message.row, message.column);
                 await botClient.DeleteMessageAsync(
                     chatId: user.id,
-                    messageId: message.oldMessageId);
+                    messageId: answer.oldMessageId);
 
+                await SendIlineKeyboard(botClient, answer, user, cancellationToken);
 
-                await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
-                   chatId: user.id,
-                   text: message.text,
-                   replyMarkup: inlineKeyboard.GetInlineKeyboard(), // TODO: keyboard user.onWhichPage
-                   cancellationToken: cancellationToken);
                 return;
             }
+            else if (callbackQuery != null)
+                await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
             else
-                await HandleTextMessage(botClient, message, user, cancellationToken); */// если нужно отправить текстовый ответ
+                await HandleTextMessage(botClient, answer, user, cancellationToken); // если нужно отправить текстовый ответ
             return;
         } //await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "hey", true);
+
+        async Task SendIlineKeyboard( ITelegramBotClient botClient, Answer answer,
+            BotUser user, CancellationToken cancellationToken )
+        {
+            var inlineKeyboard = new InlineKeyboard(answer.keyBoard);
+            inlineKeyboard.GenerateKeyboard(answer.row, answer.column);
+
+            await botClient.SendTextMessageAsync( // TODO: случай с фотографией отельно обработать
+                   chatId: user.id,
+                   text: answer.text,
+                   replyMarkup: inlineKeyboard.GetInlineKeyboard(), // TODO: keyboard user.onWhichPage
+                   cancellationToken: cancellationToken);
+
+            chatMessageId = answer.messageId;
+        }
 
         private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {

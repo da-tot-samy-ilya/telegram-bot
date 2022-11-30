@@ -13,20 +13,14 @@ namespace telegram_bot.tinder.pages_classes
 
             keyboard = new Dictionary<string, string>
             {
-                ["Показать людей"] = "/show_people",
-                ["Мэтчи"] = "/matches",
-                ["Отправленные лайки"] = "/sent_likes",
-                ["Полученный лайки"] = "/received_likes",
-                ["Настройки"] = "/settings",
-                ["Редактировать профиль"] = "/edit_profile",
+                ["Показать людей"] = "show_people",
+                ["Мэтчи"] = "matches",
+                ["Отправленные лайки"] = "sent_likes",
+                ["Полученный лайки"] = "received_likes",
+                ["Настройки"] = "settings",
+                ["Редактировать профиль"] = "edit_profile",
             };
         }
-
-        /*public override int row { get => row  ;
-                set => this.row; }
-
-        public override int column { get => column;
-            set => throw new NotSupportedException(); }*/
 
         public override Answer getAnswer()
         {
