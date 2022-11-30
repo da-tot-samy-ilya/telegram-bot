@@ -11,7 +11,7 @@ namespace telegram_bot.bot
 {
     public class TelegramBot
     {
-        private DbUsers _dbUsers;
+        private DbUsers _dbUsers; // ABOBA
         private Tinder _tinder;
         private int chatMessageId; // Id сообщения, которое сейчас на экране
 
