@@ -1,4 +1,5 @@
 ﻿using telegram_bot.bot;
+using telegram_bot.bot.enums;
 using telegram_bot.tinder.pages_classes;
 
 namespace telegram_bot.tinder
@@ -15,7 +16,7 @@ namespace telegram_bot.tinder
         public Answer getAnswerByPage(BotUser user, Message message, int oldMessage)
         {
             return new Answer(false, oldMessage, message.messageId, user.id, 
-                enums.MessageType.text,"Hey","", pages._mainPage.getKeyboard(),
+                BotMessageType.text,"Hey","", pages._mainPage.getKeyboard(),
                 pages._mainPage.row, pages._mainPage.column);
            /* // если пользователь перемещается между страницами
             // зачем тогда ему заходить в switch? 

@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using telegram_bot.bot;
 using File = System.IO.File;
-
 namespace telegram_bot.data_base
 {
     public class Db<TKey, TValue> where TKey : notnull

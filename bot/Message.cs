@@ -1,4 +1,4 @@
-﻿using telegram_bot.tinder.enums;
+﻿using telegram_bot.bot.enums;
 
 namespace telegram_bot.bot
 {
@@ -9,9 +9,9 @@ namespace telegram_bot.bot
         public long userId;
         public string text;
         public string photoId;
-        public MessageType type;
+        public BotMessageType type;
 
-        public Message(int messageId, long userId, MessageType type, string text = "",
+        public Message(int messageId, long userId, BotMessageType type, string text = "",
             string photoId = "")
         {
             this.messageId = messageId;

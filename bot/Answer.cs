@@ -1,4 +1,5 @@
-﻿using telegram_bot.tinder.enums;
+﻿using telegram_bot.bot.enums;
+using telegram_bot.tinder.enums;
 
 namespace telegram_bot.bot
 {
@@ -11,7 +12,7 @@ namespace telegram_bot.bot
         public int column;
 
         public Answer(bool refreshThePage, int oldMessageId, int messageId, long userId,
-            MessageType type, string text = "", string photoId = "", 
+            BotMessageType type, string text = "", string photoId = "", 
             Dictionary<string, string> keyBoard = null, int row = 0, int column = 0)
             : base(messageId, userId, type, text,photoId)
         {
