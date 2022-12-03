@@ -15,6 +15,6 @@ namespace telegram_bot.tinder.pages_classes
             return keyboard;
         }
 
-        public abstract Answer getAnswer();
+        public abstract Answer getAnswer(BotUser user, Message message, int oldMessage);
     }
 }

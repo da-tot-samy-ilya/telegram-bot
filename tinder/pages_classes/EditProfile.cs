@@ -1,4 +1,5 @@
 ﻿using telegram_bot.bot;
+using telegram_bot.bot.enums;
 
 namespace telegram_bot.tinder.pages_classes
 {
@@ -22,9 +23,16 @@ namespace telegram_bot.tinder.pages_classes
                 ["Возраст"] = "set_age",
             };
         }
-        public override Answer getAnswer()
+        public override Answer getAnswer(BotUser user, Message message, int oldMessage)
         {
-            throw new NotSupportedException();
+            if (message.type == BotMessageType.text)
+            {
+                
+            }
+            else if (message.type == BotMessageType.img)
+            {
+                
+            }
         }
     }
 }

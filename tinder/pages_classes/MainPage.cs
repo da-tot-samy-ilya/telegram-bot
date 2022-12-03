@@ -22,7 +22,7 @@ namespace telegram_bot.tinder.pages_classes
             };
         }
 
-        public override Answer getAnswer()
+        public override Answer getAnswer(BotUser user, Message message, int oldMessage)
         {
             throw new NotSupportedException();
         }
