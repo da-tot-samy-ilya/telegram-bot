@@ -1,6 +1,6 @@
 ﻿namespace telegram_bot.tinder.enums
 {
-    enum PagesEnum
+    public enum PagesEnum
     {
         main,
         edit_profile,
@@ -11,6 +11,7 @@
         settings,
         delete_all_data,
         set_search_filters,
-        notofocations
+        notifications,
+        not_page
     }
 }

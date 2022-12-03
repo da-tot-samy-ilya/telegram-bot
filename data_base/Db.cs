@@ -87,36 +87,4 @@ namespace telegram_bot.data_base
             File.WriteAllText(_path, JsonConvert.SerializeObject(dict));
         }
     }
-
-    public class DbUsers : Db<long, BotUser>
-    {
-        public DbUsers(string dbName, string fileExtention) : base(dbName, fileExtention)
-        {
-        }
-
-        public BotUser GetOrCreate(long id, string firstName)
-        {
-            if (FindByKey(id))
-            {
-                return GetByKey(id);
-            }
-            else
-            {
-                var newUser = new BotUser(id, firstName);
-                Add(id, newUser);
-                return newUser;
-            }
-        }
-
-        public BotUser GetByKey(long id)
-        {
-            if (!FindByKey(id))
-            {
-                return null;
-            }
-
-            Table = ReadAllTable();
-            return Table[id];
-        }
-    }
 }

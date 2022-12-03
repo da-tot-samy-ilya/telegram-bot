@@ -7,6 +7,7 @@ namespace telegram_bot.bot
         public long id;
         public string firstName;
         public string lastName;
+        public string nickName;
         public int age;
         public string photoId;
         public string discribition;
@@ -18,16 +19,17 @@ namespace telegram_bot.bot
         public List<Interests> interests;
         public List<SearchPurpose> searchPurpose;
 
-        private PagesEnum onWhichPage;
+        public PagesEnum onWhichPage;
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 
 
         // TODO: сделать функцию getPage(Pages page) -> Page (типа возвращает страницу по enum`у)   
-        public BotUser(long userId, string userFirstName, string userPhotoId = null,
+        public BotUser(long userId,string userNickName, string userFirstName = "", string userPhotoId = null,
             string userLastName = "", int userAge = 14, string userDiscribition = "")
         {
             id = userId;
+            nickName = userNickName;
             firstName = userFirstName;
             lastName = userLastName;
             age = userAge;

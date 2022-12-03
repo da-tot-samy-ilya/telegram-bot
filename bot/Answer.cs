@@ -5,22 +5,24 @@ namespace telegram_bot.bot
 {
     public class Answer : Message
     {
-        public bool refreshThePage;
+        public bool isToUpdateLastMessage;
+        public bool isToGenerateKeyboard;
         public int oldMessageId;
         public Dictionary<string, string> keyBoard;
-        public int row;
-        public int column;
+        public int rowsCount;
+        public int columnsCount;
 
-        public Answer(bool refreshThePage, int oldMessageId, int messageId, long userId,
+        public Answer(bool isToUpdateLastMessage, bool isToGenerateKeyboard, int oldMessageId, int messageId, long userId,
             BotMessageType type, string text = "", string photoId = "", 
-            Dictionary<string, string> keyBoard = null, int row = 0, int column = 0)
-            : base(messageId, userId, type, text,photoId)
+            Dictionary<string, string> keyBoard = null, int rowsCount = 0, int columnsCount = 0)
+            : base(messageId, userId, type, text, photoId)
         {
-            this.refreshThePage = refreshThePage;
+            this.isToUpdateLastMessage = isToUpdateLastMessage;
+            this.isToGenerateKeyboard = isToGenerateKeyboard;
             this.oldMessageId = oldMessageId;
             this.keyBoard = keyBoard;
-            this.row = row;
-            this.column = column; 
+            this.rowsCount = rowsCount;
+            this.columnsCount = columnsCount;
         }
 
     }
