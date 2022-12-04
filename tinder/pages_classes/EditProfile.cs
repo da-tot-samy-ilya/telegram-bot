@@ -8,19 +8,19 @@ namespace telegram_bot.tinder.pages_classes
         public EditProfile(string text = "", string imgId = "")
         {
             this.text = text;
-            row = 2;
-            column = 4;
+            rowsCount = 2;
+            columnsCount = 4;
 
             keyboard = new Dictionary<string, string>
             {
-                ["На главную"] = "main",
-                ["Имя"] = "set_name",
-                ["Описание"] = "set_describtion",
-                ["Интересы"] = "set_interests",
-                ["Цель поиска"] = "set_search_purpose",
-                ["Фото"] = "set_images",
-                ["Город"] = "set_town",
-                ["Возраст"] = "set_age",
+                ["To main"] = "main",
+                ["Name"] = "set_name",
+                ["Description"] = "set_describtion",
+                ["Interests"] = "set_interests",
+                ["Search purpose"] = "set_search_purpose",
+                ["Photo"] = "set_images",
+                ["Town"] = "set_town",
+                ["Age"] = "set_age",
             };
         }
         public override Answer getAnswer(BotUser user, Message message, int oldMessage)

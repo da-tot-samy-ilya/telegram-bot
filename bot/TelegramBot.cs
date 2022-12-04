@@ -15,11 +15,13 @@ namespace telegram_bot.bot
         private Tinder _tinder;
         private int lastMessageId; // Id сообщения, которое сейчас на экране
         private TelegramBotClient _botClient;
+        private InlineKeyboard _inlineKeyboard;
         public TelegramBot(UsersDb dbUsers, Tinder tinder, TelegramBotClient botClient, CancellationTokenSource cts)
         {
             _dbUsers = dbUsers;
             _tinder = tinder;
             _botClient = botClient;
+            _inlineKeyboard = new InlineKeyboard();
             var receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
             _botClient.StartReceiving(
                 updateHandler: HandleUpdateAsync,
@@ -53,7 +55,6 @@ namespace telegram_bot.bot
                     var user = _dbUsers.GetOrCreate(userId, userName);
                     
                     return new Tuple<Message, BotUser>(new Message(0, userId, BotMessageType.command, command), user);
-                    break;
                 case UpdateType.Message:
                     var message = update.Message;
                     userId = message.Chat.Id;
@@ -84,31 +85,44 @@ namespace telegram_bot.bot
             }
             if (answer.isToGenerateKeyboard)
             {
-                if (answer.type == BotMessageType.img)
+                switch (answer.type)
                 {
-                    
-                }
-                else if (answer.type == BotMessageType.text)
-                {
-                    
+                    case BotMessageType.img:
+                        await _botClient.SendPhotoAsync(
+                            chatId: user.id,
+                            photo: answer.photoId,
+                            caption: answer.text,
+                            replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
+                                answer.keyBoard),
+                            cancellationToken: cancellationToken);
+                        break;
+                    case BotMessageType.text:
+                        await _botClient.SendTextMessageAsync(
+                            chatId: user.id,
+                            text: answer.text,
+                            replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
+                                answer.keyBoard),
+                            cancellationToken: cancellationToken);
+                        break;
                 }
             }
             else
             {
-                if (answer.type == BotMessageType.img)
+                switch (answer.type)
                 {
-                    await _botClient.SendPhotoAsync(
-                        chatId: user.id,
-                        photo: answer.photoId,
-                        caption: answer.text,
-                        cancellationToken: cancellationToken);
-                }
-                else if (answer.type == BotMessageType.text)
-                {
-                    await _botClient.SendTextMessageAsync(
-                        chatId: user.id,
-                        text: answer.text,
-                        cancellationToken: cancellationToken);
+                    case BotMessageType.img:
+                        await _botClient.SendPhotoAsync(
+                            chatId: user.id,
+                            photo: answer.photoId,
+                            caption: answer.text,
+                            cancellationToken: cancellationToken);
+                        break;
+                    case BotMessageType.text:
+                        await _botClient.SendTextMessageAsync(
+                            chatId: user.id,
+                            text: answer.text,
+                            cancellationToken: cancellationToken);
+                        break;
                 }
             }
         }

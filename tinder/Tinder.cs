@@ -35,6 +35,8 @@ namespace telegram_bot.tinder
             // если просто перход между страницами, то не для каждой страницы нужен getAnswer (ex: main)
 
             return user.onWhichPage.getAnswer(refreshThePage, user, message, message.Id);*/
+           
+           
            var currentPageEnum = pages.GetPageEnumByCommand(message.text);
            if (currentPageEnum != PagesEnum.not_page)
            {

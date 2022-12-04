@@ -7,8 +7,8 @@ namespace telegram_bot.tinder.pages_classes
         protected Dictionary<string, string> keyboard;
         protected string text;
         protected string imgId;
-        public int row { get; protected set; }
-        public int column { get; protected set; }
+        public int rowsCount { get; protected set; }
+        public int columnsCount { get; protected set; }
 
         public Dictionary<string, string> getKeyboard()
         {

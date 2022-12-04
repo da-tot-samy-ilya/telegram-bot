@@ -1,4 +1,5 @@
 ﻿using telegram_bot.bot;
+using telegram_bot.bot.enums;
 
 namespace telegram_bot.tinder.pages_classes
 {
@@ -8,23 +9,26 @@ namespace telegram_bot.tinder.pages_classes
         {
             this.text = text;
             this.imgId = imgId;
-            row = 3;
-            column = 2;
-
+            rowsCount = 3;
+            columnsCount = 2;
+            text = "Hi! In that bot u can find people, with who u will be comfortable." +
+                   "There are some buttons, u can control the bot by them.";
             keyboard = new Dictionary<string, string>
             {
-                ["Показать людей"] = "show_people",
-                ["Мэтчи"] = "matches",
-                ["Отправленные лайки"] = "sent_likes",
-                ["Полученный лайки"] = "received_likes",
-                ["Настройки"] = "settings",
-                ["Редактировать профиль"] = "edit_profile",
+                ["Show people"] = "show_people",
+                ["Matches"] = "matches",
+                ["Sent likes"] = "sent_likes",
+                ["Received likes"] = "received_likes",
+                ["Settings"] = "settings",
+                ["Edit profile"] = "edit_profile",
             };
+            
         }
 
         public override Answer getAnswer(BotUser user, Message message, int oldMessage)
         {
-            throw new NotSupportedException();
+            return new Answer(true, true, oldMessage, 0,
+                user.id, BotMessageType.text, text, "", keyboard, rowsCount, columnsCount);
         }
     }
 
