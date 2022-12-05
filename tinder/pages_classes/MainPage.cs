@@ -5,9 +5,8 @@ namespace telegram_bot.tinder.pages_classes
 {
     public class MainPage : Page
     {
-        public MainPage(string text = "", string imgId = "")
+        public MainPage(string imgId = "")
         {
-            this.text = text;
             this.imgId = imgId;
             rowsCount = 3;
             columnsCount = 2;
