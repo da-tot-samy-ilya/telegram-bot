@@ -44,7 +44,7 @@ namespace telegram_bot.tinder
                usersDb.Update(user.id, user);
            }
 
-           var currentPage = pages.getPageByEnum(currentPageEnum);
+           var currentPage = pages.GetPageByEnum(currentPageEnum);
 
            return currentPage.getAnswer(user, message, oldMessage);
 

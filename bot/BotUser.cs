@@ -20,6 +20,8 @@ namespace telegram_bot.bot
         public List<SearchPurpose> searchPurpose;
 
         public PagesEnum onWhichPage;
+        public bool isLockedUpOnCurrPage;
+        
 
         // TODO: add personal_setting = { search_filters {  } }
         // TODO: add geolocation 

@@ -15,12 +15,12 @@ namespace telegram_bot.tinder.pages_classes
                    "There are some buttons, u can control the bot by them.";
             keyboard = new Dictionary<string, string>
             {
-                ["Show people"] = "show_people",
-                ["Matches"] = "matches",
-                ["Sent likes"] = "sent_likes",
-                ["Received likes"] = "received_likes",
-                ["Settings"] = "settings",
-                ["Edit profile"] = "edit_profile",
+                ["Show people"] = "/show_people",
+                ["Matches"] = "/matches",
+                ["Sent likes"] = "/sent_likes",
+                ["Received likes"] = "/received_likes",
+                ["Settings"] = "/settings",
+                ["Edit profile"] = "/edit_profile",
             };
             
         }
