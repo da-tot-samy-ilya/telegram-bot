@@ -1,5 +1,4 @@
 ﻿using telegram_bot.bot.enums;
-using telegram_bot.tinder.enums;
 
 namespace telegram_bot.bot
 {

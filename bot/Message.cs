@@ -2,9 +2,8 @@
 
 namespace telegram_bot.bot
 {
-    public class Message // мб изменить название на Message
+    public class Message
     {
-        // TODO: нужно настроить класс
         public int messageId;
         public long userId;
         public string text;
