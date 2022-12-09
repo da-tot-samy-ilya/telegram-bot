@@ -14,8 +14,8 @@ namespace telegram_bot
             var botClient = new TelegramBotClient(GetToken());
             var cts = new CancellationTokenSource();
             
-            var mainPage = new MainPage();
-            var editProfile = new EditProfile();
+            var mainPage = new MainPage(db);
+            var editProfile = new EditProfile(db);
             var pages = new Pages(mainPage, editProfile);
             var tinder = new Tinder(pages, db);
             

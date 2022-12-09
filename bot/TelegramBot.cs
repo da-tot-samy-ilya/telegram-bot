@@ -70,9 +70,9 @@ namespace telegram_bot.bot
                     {
                         return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.text, message.Text), user);
                     }
-                    return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.text, "/help"), user);
+                    return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.incorrectType, ""), user);
                 default:
-                    return new Tuple<Message, BotUser>(new Message(0, 0, BotMessageType.text, "/help"), null);
+                    return new Tuple<Message, BotUser>(new Message(0, 0, BotMessageType.incorrectType, ""), null);
             }
         }
         private async Task SendAnswer(Answer answer, BotUser user, CancellationToken cancellationToken)

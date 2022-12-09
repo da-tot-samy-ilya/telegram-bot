@@ -37,5 +37,14 @@ namespace telegram_bot.tinder.pages_classes
                 PagesEnum.edit_profile => _editProfile
             };
         }
+
+        public UserLocalStatus GetUserLocalStatusEnumByEnum(PagesEnum pagesEnum)
+        {
+            return pagesEnum switch
+            {
+                PagesEnum.main => UserLocalStatus.MainPageBase,
+                PagesEnum.edit_profile => UserLocalStatus.EditProfileBase
+            };
+        }
     }
 }

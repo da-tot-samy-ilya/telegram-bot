@@ -1,11 +1,12 @@
 ﻿using telegram_bot.bot;
 using telegram_bot.bot.enums;
+using telegram_bot.data_base;
 
 namespace telegram_bot.tinder.pages_classes
 {
     public class MainPage : Page
     {
-        public MainPage(string imgId = "")
+        public MainPage(UsersDb usersDb, string imgId = ""): base(usersDb)
         {
             this.imgId = imgId;
             rowsCount = 3;

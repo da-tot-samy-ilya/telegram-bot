@@ -10,25 +10,22 @@ namespace telegram_bot.bot
         public string nickName;
         public int age;
         public string photoId;
-        public string discribition;
-
+        public string description;
+        public string town;
+        
         public List<long> sentLikes;
         public List<long> recieved_likes;
         public List<long> matches;
 
-        public List<Interests> interests;
-        public List<SearchPurpose> searchPurpose;
+        public List<string> interests;
+        public List<string> searchPurposes;
 
         public PagesEnum onWhichPage;
         public bool isLockedUpOnCurrPage;
-        
+        public UserLocalStatus localStatus;
 
-        // TODO: add personal_setting = { search_filters {  } }
-        // TODO: add geolocation 
-
-        // TODO: сделать функцию getPage(Pages page) -> Page (типа возвращает страницу по enum`у)   
         public BotUser(long userId,string userNickName, string userFirstName = "", string userPhotoId = null,
-            string userLastName = "", int userAge = 14, string userDiscribition = "")
+            string userLastName = "", int userAge = 14, string userDescription = "", string userTown = "")
         {
             id = userId;
             nickName = userNickName;
@@ -36,15 +33,18 @@ namespace telegram_bot.bot
             lastName = userLastName;
             age = userAge;
             photoId = userPhotoId;
-            discribition = userDiscribition;
-
+            description = userDescription;
+            town = userTown;
+            
             sentLikes = new List<long>();
             recieved_likes = new List<long>();
             matches = new List<long>();
-            interests = new List<Interests>();
-            searchPurpose = new List<SearchPurpose>();
+            interests = new List<string>();
+            searchPurposes = new List<string>();
 
             onWhichPage = PagesEnum.main;
+            isLockedUpOnCurrPage = false;
+            localStatus = UserLocalStatus.MainPageBase;
         }
 
     }

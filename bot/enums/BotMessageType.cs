@@ -4,6 +4,7 @@
     {
         img,
         text,
-        command
+        command,
+        incorrectType
     }
 }
