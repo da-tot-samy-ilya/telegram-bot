@@ -22,6 +22,6 @@ namespace telegram_bot.tinder.pages_classes
             _usersDb = usersDb;
         }
 
-        public abstract Answer getAnswer(BotUser user, Message message, int oldMessage);
+        public abstract Answer getAnswer(Message message, int oldMessage);
     }
 }

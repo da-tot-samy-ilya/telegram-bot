@@ -12,6 +12,7 @@ namespace telegram_bot.bot
         public string photoId;
         public string description;
         public string town;
+        public bool isHasPhoto;
         
         public List<long> sentLikes;
         public List<long> recieved_likes;
@@ -24,7 +25,9 @@ namespace telegram_bot.bot
         public bool isLockedUpOnCurrPage;
         public UserLocalStatus localStatus;
 
-        public BotUser(long userId,string userNickName, string userFirstName = "", string userPhotoId = null,
+        public int lastMessageId;
+
+        public BotUser(long userId,string userNickName, int userLastMessageId, string userFirstName = "", string userPhotoId = null,
             string userLastName = "", int userAge = 14, string userDescription = "", string userTown = "")
         {
             id = userId;
@@ -35,7 +38,8 @@ namespace telegram_bot.bot
             photoId = userPhotoId;
             description = userDescription;
             town = userTown;
-            
+            isHasPhoto = false;
+                
             sentLikes = new List<long>();
             recieved_likes = new List<long>();
             matches = new List<long>();
@@ -45,6 +49,8 @@ namespace telegram_bot.bot
             onWhichPage = PagesEnum.main;
             isLockedUpOnCurrPage = false;
             localStatus = UserLocalStatus.MainPageBase;
+
+            lastMessageId = userLastMessageId;
         }
 
     }

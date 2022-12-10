@@ -8,7 +8,7 @@ namespace telegram_bot.data_base
         {
         }
 
-        public BotUser GetOrCreate(long id, string userName)
+        public BotUser GetOrCreate(long id, string userName, int lastMessageId)
         {
             if (FindByKey(id))
             {
@@ -16,7 +16,7 @@ namespace telegram_bot.data_base
             }
             else
             {
-                var newUser = new BotUser(id, userName);
+                var newUser = new BotUser(id, userName, lastMessageId);
                 Add(id, newUser);
                 return newUser;
             }

@@ -25,40 +25,12 @@ namespace telegram_bot.tinder.pages_classes
             
         }
 
-        public override Answer getAnswer(BotUser user, Message message, int oldMessage)
+        public override Answer getAnswer(Message message, int oldMessage)
         {
-            return new Answer(true, true, oldMessage, 0,
-                user.id, BotMessageType.text, text, "", keyboard, rowsCount, columnsCount);
+            return new Answer(true, true,
+                message.user, BotMessageType.text, text, "", keyboard, rowsCount, columnsCount);
         }
     }
 
 }
-
-/*inlineKeyboard = new InlineKeyboardMarkup(new[]
-        {
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData(text: "Показать людей", callbackData: "/show_people"),
-                InlineKeyboardButton.WithCallbackData(text: "Мэтчи", callbackData: "/matches"),
-            },
-
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData(text: "Отправленные лайки", callbackData: "/sent_likes"),
-                InlineKeyboardButton.WithCallbackData(text: "Полученный лайки", callbackData: "/received_likes"),
-            },
-
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData(text: "Настройки", callbackData: "/settings"),
-
-            },
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData(text: "Редактировать профиль", callbackData: "/edit_profile"),
-            }
-
-        });*/
-
-/*public override Request getAnswer( bool refreshThePage, BotUser user, Request message, int messageId ) =>
-           new Request(messageId, MessageType.text, text, "", refreshThePage);*/
+     

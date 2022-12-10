@@ -11,11 +11,10 @@ namespace telegram_bot.bot
 {
     public class TelegramBot
     {
-        private UsersDb _dbUsers;
-        private Tinder _tinder;
-        private int lastMessageId; // Id сообщения, которое сейчас на экране
-        private TelegramBotClient _botClient;
-        private InlineKeyboard _inlineKeyboard;
+        private readonly UsersDb _dbUsers;
+        private readonly Tinder _tinder;
+        private readonly TelegramBotClient _botClient;
+        private readonly InlineKeyboard _inlineKeyboard;
         public TelegramBot(UsersDb dbUsers, Tinder tinder, TelegramBotClient botClient, CancellationTokenSource cts)
         {
             _dbUsers = dbUsers;
@@ -36,14 +35,12 @@ namespace telegram_bot.bot
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            var (message, user) = GenerateMessage(update);
-            
-            var answer = _tinder.GetAnswer(user, message, lastMessageId);
-
-            await SendAnswer(answer, user, cancellationToken);
+            var message = GenerateMessage(update);
+            var answer = _tinder.GetAnswer(message, message.user.lastMessageId);
+            await SendAnswer(answer, cancellationToken);
         }
 
-        private Tuple<Message, BotUser> GenerateMessage(Update update)
+        private Message GenerateMessage(Update update)
         {
             switch (update.Type)
             {
@@ -52,44 +49,51 @@ namespace telegram_bot.bot
                     var command = callback.Data;
                     var userId = callback.From.Id;
                     var userName = callback.From.Username;
-                    var user = _dbUsers.GetOrCreate(userId, userName);
+                    var user = _dbUsers.GetOrCreate(userId, userName, 0);
                     
-                    return new Tuple<Message, BotUser>(new Message(0, userId, BotMessageType.command, command), user);
+                    return new Message(user, BotMessageType.command, command);
                 case UpdateType.Message:
                     var message = update.Message;
                     userId = message.Chat.Id;
-                    var messageId = message.MessageId;
                     userName = message.Chat.Username == null ? "" : message.Chat.Username;
-                    user = _dbUsers.GetOrCreate(userId, userName);
+                    user = _dbUsers.GetOrCreate(userId, userName, 0);
                     
                     if (message.Photo != null)
                     {
-                        return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.img, "", message.Photo[0].FileId), user);
+                        return new Message(user, BotMessageType.img, "", message.Photo[0].FileId);
                     }
                     if (message.Text != null)
                     {
-                        return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.text, message.Text), user);
+                        return new Message(user, BotMessageType.text, message.Text);
                     }
-                    return new Tuple<Message, BotUser>(new Message(messageId, userId, BotMessageType.incorrectType, ""), user);
+                    return new Message(user, BotMessageType.incorrectType, "");
                 default:
-                    return new Tuple<Message, BotUser>(new Message(0, 0, BotMessageType.incorrectType, ""), null);
+                    return new Message( null, BotMessageType.incorrectType, "");
             }
         }
-        private async Task SendAnswer(Answer answer, BotUser user, CancellationToken cancellationToken)
+        private async Task SendAnswer(Answer answer, CancellationToken cancellationToken)
         {
+            var message = new Telegram.Bot.Types.Message();
             if (answer.isToUpdateLastMessage)
             {
-                await _botClient.DeleteMessageAsync(chatId: user.id, 
-                    messageId: answer.oldMessageId, 
-                    cancellationToken: cancellationToken);
+                try
+                {
+                    await _botClient.DeleteMessageAsync(chatId: answer.user.id, 
+                        messageId: answer.user.lastMessageId, 
+                        cancellationToken: cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("There is no such message to delete");
+                }
             }
             if (answer.isToGenerateKeyboard)
             {
                 switch (answer.type)
                 {
                     case BotMessageType.img:
-                        await _botClient.SendPhotoAsync(
-                            chatId: user.id,
+                        message = await _botClient.SendPhotoAsync(
+                            chatId: answer.user.id,
                             photo: answer.photoId,
                             caption: answer.text,
                             replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
@@ -97,12 +101,20 @@ namespace telegram_bot.bot
                             cancellationToken: cancellationToken);
                         break;
                     case BotMessageType.text:
-                        await _botClient.SendTextMessageAsync(
-                            chatId: user.id,
-                            text: answer.text,
-                            replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
-                                answer.keyBoard),
-                            cancellationToken: cancellationToken);
+                        try
+                        {
+                            message = await _botClient.SendTextMessageAsync(
+                                chatId: answer.user.id,
+                                text: answer.text,
+                                replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
+                                    answer.keyBoard),
+                                cancellationToken: cancellationToken);
+                            
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
                         break;
                 }
             }
@@ -111,20 +123,22 @@ namespace telegram_bot.bot
                 switch (answer.type)
                 {
                     case BotMessageType.img:
-                        await _botClient.SendPhotoAsync(
-                            chatId: user.id,
+                        message = await _botClient.SendPhotoAsync(
+                            chatId: answer.user.id,
                             photo: answer.photoId,
                             caption: answer.text,
                             cancellationToken: cancellationToken);
                         break;
                     case BotMessageType.text:
-                        await _botClient.SendTextMessageAsync(
-                            chatId: user.id,
+                        message = await _botClient.SendTextMessageAsync(
+                            chatId: answer.user.id,
                             text: answer.text,
                             cancellationToken: cancellationToken);
                         break;
                 }
             }
+            answer.user.lastMessageId = message.MessageId;
+            _dbUsers.Update(answer.user.id, answer.user);
         }
         
         
