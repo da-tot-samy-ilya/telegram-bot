@@ -35,9 +35,12 @@ namespace telegram_bot.bot
 
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            var message = GenerateMessage(update);
+            await botClient.DeleteMessageAsync(
+                chatId: update.Message.Chat.Id,
+                messageId: update.Message.MessageId);
+           /* var message = GenerateMessage(update);
             var answer = _tinder.GetAnswer(message, message.user.lastMessageId);
-            await SendAnswer(answer, cancellationToken);
+            await SendAnswer(answer, cancellationToken);*/
         }
 
         private Message GenerateMessage(Update update)
