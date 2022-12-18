@@ -10,13 +10,15 @@ namespace telegram_bot
     {
         public static void Main()
         {
-            var db = new UsersDb("users", "json");
+            var db = new UsersDb("tinder-users", "users");
             var botClient = new TelegramBotClient(GetToken());
             var cts = new CancellationTokenSource();
             
             var mainPage = new MainPage(db);
             var editProfile = new EditProfile(db);
-            var pages = new Pages(mainPage, editProfile);
+            var jokesGenerator = new JokesGenerator(db);
+            
+            var pages = new Pages(mainPage, editProfile, jokesGenerator);
             var tinder = new Tinder(pages, db);
             
             
