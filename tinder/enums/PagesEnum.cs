@@ -4,14 +4,15 @@
     {
         main,
         edit_profile,
-        sent_likes,
+        jokes_generator,
+        /*sent_likes,
         show_people,
         recieved_likes,
         matches,
         settings,
         delete_all_data,
         set_search_filters,
-        notifications,
+        notifications,*/
         not_page
     }
 }

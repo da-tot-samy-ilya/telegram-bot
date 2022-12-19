@@ -4,13 +4,15 @@ namespace telegram_bot.tinder.pages_classes
 {
     public class Pages
     {
-        public MainPage _mainPage;
-        public EditProfile _editProfile;
+        private MainPage _mainPage;
+        private EditProfile _editProfile;
+        private JokesGenerator _jokesGenerator;
 
-        public Pages(MainPage mainPage, EditProfile editProfile)
+        public Pages(MainPage mainPage, EditProfile editProfile, JokesGenerator jokesGenerator)
         {
             _mainPage = mainPage;
             _editProfile = editProfile;
+            _jokesGenerator = jokesGenerator;
         }
 
         public PagesEnum GetPageEnumByCommand(string command)
@@ -19,6 +21,7 @@ namespace telegram_bot.tinder.pages_classes
             {
                 "/main" => PagesEnum.main,
                 "/edit_profile" => PagesEnum.edit_profile,
+                "/jokes_generator" => PagesEnum.jokes_generator,
                 /*"/sent_likes" => PagesEnum.sent_likes,
                 "/show_people" => PagesEnum.show_people,
                 "/recieved_likes" => PagesEnum.recieved_likes,
@@ -34,7 +37,8 @@ namespace telegram_bot.tinder.pages_classes
             return pagesEnum switch
             {
                 PagesEnum.main => _mainPage,
-                PagesEnum.edit_profile => _editProfile
+                PagesEnum.edit_profile => _editProfile,
+                PagesEnum.jokes_generator => _jokesGenerator,
             };
         }
 
@@ -43,7 +47,8 @@ namespace telegram_bot.tinder.pages_classes
             return pagesEnum switch
             {
                 PagesEnum.main => UserLocalStatus.MainPageBase,
-                PagesEnum.edit_profile => UserLocalStatus.EditProfileBase
+                PagesEnum.edit_profile => UserLocalStatus.EditProfileBase,
+                PagesEnum.jokes_generator => UserLocalStatus.JokesGeneratorBase,
             };
         }
     }

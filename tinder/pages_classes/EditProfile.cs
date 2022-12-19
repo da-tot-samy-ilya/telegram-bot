@@ -30,7 +30,7 @@ namespace telegram_bot.tinder.pages_classes
             var user = message.user;
             if (message.type == BotMessageType.incorrectType)
             {
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             switch (user.localStatus)
             {
@@ -51,11 +51,11 @@ namespace telegram_bot.tinder.pages_classes
                 case UserLocalStatus.EditProfileSetSearchPurpose:
                     return SetSearchPurpose(user, message);
                 default:
-                    return GenerateCurrentProfile(user, message);
+                    return GenerateCurrentProfile(user);
             }
         }
 
-        private Answer GenerateCurrentProfile(BotUser user, Message message)
+        private Answer GenerateCurrentProfile(BotUser user)
         {
             var purposes = "";
             for (var i = 0; i < user.searchPurposes.Count; i++)
@@ -135,11 +135,11 @@ namespace telegram_bot.tinder.pages_classes
                         _usersDb.Update(user.id, user);
                         break;
                     default:
-                        return GenerateCurrentProfile(user, message);
+                        return GenerateCurrentProfile(user);
                 }
                 return new Answer(true, false, user, BotMessageType.text, answerText);
             }
-            return GenerateCurrentProfile(user, message);
+            return GenerateCurrentProfile(user);
         }
         private Answer SetAge(BotUser user, Message message)
         {
@@ -148,7 +148,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.age = int.Parse(message.text);
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not number\nInput your age (only number)");
@@ -160,7 +160,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.description = message.text;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your profile description");
@@ -173,7 +173,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.photoId = message.photoId;
                 user.isHasPhoto = true;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not image\nSend only one image for your profile");
@@ -185,7 +185,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.interests = message.text.Split().ToList();
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your interests (separate only by space)");
@@ -200,7 +200,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.lastName = nameList.Count < 2 ? "" : nameList[1];
                 
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your name (separate your first and last names by space)");
@@ -212,7 +212,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.town = message.text;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false,user,
                 BotMessageType.text, "This is not text\nInput your town");
@@ -224,7 +224,7 @@ namespace telegram_bot.tinder.pages_classes
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.searchPurposes = message.text.Split().ToList();
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user, message);
+                return GenerateCurrentProfile(user);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your search purposes (separate only by space)");

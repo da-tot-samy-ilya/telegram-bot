@@ -11,7 +11,9 @@
         EditProfileSetSearchPurpose,
         EditProfileSetImages,
         EditProfileSetTown,
-        EditProfileSetAge
+        EditProfileSetAge,
+        
+        JokesGeneratorBase,
     }
 }
 

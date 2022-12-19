@@ -16,11 +16,14 @@ namespace telegram_bot.tinder.pages_classes
             keyboard = new Dictionary<string, string>
             {
                 ["Show people"] = "/show_people",
+                /*
                 ["Matches"] = "/matches",
+                */
                 ["Sent likes"] = "/sent_likes",
                 ["Received likes"] = "/received_likes",
                 ["Settings"] = "/settings",
                 ["Edit profile"] = "/edit_profile",
+                ["Jokes Generator"] = "/jokes_generator",
             };
             
         }
