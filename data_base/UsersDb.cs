@@ -49,7 +49,7 @@ namespace telegram_bot
                 Add(user);
                 return user;
             }
-            return users[0];
+            return users[0];//
         }
     }
 }
