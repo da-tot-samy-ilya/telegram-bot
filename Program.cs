@@ -29,7 +29,7 @@ namespace telegram_bot
 
         public static string GetToken()
         {
-            var token = File.ReadAllText(@"..\..\..\data_base\db\token.txt");
+            var token = Environment.GetEnvironmentVariable("token");
             return token;
         }
     }

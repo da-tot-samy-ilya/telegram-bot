@@ -4,7 +4,6 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using telegram_bot.data_base;
 using telegram_bot.tinder;
 
 namespace telegram_bot.bot
@@ -37,7 +36,12 @@ namespace telegram_bot.bot
         {
             var message = GenerateMessage(update);
             var answer = _tinder.GetAnswer(message, message.user.lastMessageId);
+            Console.WriteLine(answer.isToGenerateKeyboard);
+            Console.WriteLine(answer.isToUpdateLastMessage);
+            Console.WriteLine(answer.type);
+            Console.WriteLine(answer.user.onWhichPage);
             await SendAnswer(answer, cancellationToken);
+
         }
 
         private Message GenerateMessage(Update update)

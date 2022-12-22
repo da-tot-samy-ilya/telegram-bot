@@ -20,8 +20,8 @@ namespace telegram_bot.tinder.pages_classes
                 ["Description"] = "/set_description",
                 ["Interests"] = "/set_interests",
                 ["Search purpose"] = "/set_search_purpose",
-                ["Photo"] = "/set_images",
-                ["Town"] = "/set_town",
+                ["Photo"] = "/set_images", 
+                ["Town"] = "/set_town", 
                 ["Age"] = "/set_age",
             };
         }
@@ -86,7 +86,7 @@ namespace telegram_bot.tinder.pages_classes
             if (!user.isHasPhoto)
             {
                 return new Answer(true, true, user, 
-                    BotMessageType.text, answerText, "", keyboard, rowsCount, columnsCount);
+                    BotMessageType.text, answerText, user.photoId, keyboard, rowsCount, columnsCount);
             }
             return new Answer(true, true, user, 
                 BotMessageType.img, answerText, user.photoId, keyboard, rowsCount, columnsCount);

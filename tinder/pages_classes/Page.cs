@@ -5,10 +5,10 @@ namespace telegram_bot.tinder.pages_classes
 {
     public abstract class Page
     {
-        protected Dictionary<string, string> keyboard;
-        protected UsersDb _usersDb;
-        protected string text;
-        protected string imgId;
+        public Dictionary<string, string> keyboard;
+        public UsersDb _usersDb;
+        public string text;
+        public string imgId = "";
         public int rowsCount { get; protected set; }
         public int columnsCount { get; protected set; }
 

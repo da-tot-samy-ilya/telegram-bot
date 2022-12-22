@@ -38,7 +38,7 @@ namespace telegram_bot.tinder.pages_classes
                 message.user, BotMessageType.text, text, "", keyboard, rowsCount, columnsCount);
         }
 
-        private async Task<String> GetJoke()
+        public async Task<String> GetJoke()
         {
             var httpClient = new HttpClient();
             var joke = await httpClient.GetStringAsync("https://geek-jokes.sameerkumar.website/api?format=text");
