@@ -10,7 +10,7 @@ namespace telegram_bot
     {
         public static void Main()
         {
-            var db = new UsersDb("tinder-users", "users");
+            var db = new UsersDb("users", "json");
             var botClient = new TelegramBotClient(GetToken());
             var cts = new CancellationTokenSource();
             
