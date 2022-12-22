@@ -25,16 +25,17 @@ namespace telegram_bot.tinder
                 return pages.GetPageByEnum(message.user.onWhichPage).getAnswer(message, oldMessage);
             }
             var currentPageEnum = pages.GetPageEnumByCommand(message.text);
-           if (currentPageEnum != PagesEnum.not_page)
-           {
-               message.user.onWhichPage = currentPageEnum;
-               message.user.localStatus = pages.GetUserLocalStatusEnumByEnum(currentPageEnum);
-               usersDb.Update(message.user.id, message.user);
+
+            if (currentPageEnum != PagesEnum.not_page)
+            {
+                message.user.onWhichPage = currentPageEnum;
+                message.user.localStatus = pages.GetUserLocalStatusEnumByEnum(currentPageEnum);
+                usersDb.Update(message.user.id, message.user);
                
-               currentPage = pages.GetPageByEnum(currentPageEnum);
-           }
+                currentPage = pages.GetPageByEnum(currentPageEnum);
+            }
            
-           return currentPage.getAnswer(message, oldMessage);
+            return currentPage.getAnswer(message, oldMessage);
         }
     }
 }
