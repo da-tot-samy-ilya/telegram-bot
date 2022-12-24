@@ -7,6 +7,7 @@ namespace telegram_bot.tinder.pages_classes
 {
     public class EditProfile : Page
     {
+        public string[] cancelButton = new string[] { "Cancel" };
         public EditProfile(UsersDb usersDb, string text = "", string imgId = ""): base(usersDb)
         {
             this.text = text;
@@ -17,12 +18,12 @@ namespace telegram_bot.tinder.pages_classes
             {
                 ["To main"] = "/main",
                 ["Name"] = "/set_name",
-                ["Description"] = "/set_description",
-                ["Interests"] = "/set_interests",
-                ["Search purpose"] = "/set_search_purpose",
-                ["Photo"] = "/set_images", 
-                ["Town"] = "/set_town", 
                 ["Age"] = "/set_age",
+                ["Town"] = "/set_town",
+                ["Description"] = "/set_description",
+                ["Search purpose"] = "/set_search_purpose",
+                ["Interests"] = "/set_interests",
+                ["Photo"] = "/set_images", 
             };
         }
         public override Answer getAnswer(Message message, int oldMessage)
@@ -30,7 +31,7 @@ namespace telegram_bot.tinder.pages_classes
             var user = message.user;
             if (message.type == BotMessageType.incorrectType)
             {
-                return GenerateCurrentProfile(user);
+                return GenerateCurrentProfile(user, "", true, false);
             }
             switch (user.localStatus)
             {
@@ -51,11 +52,12 @@ namespace telegram_bot.tinder.pages_classes
                 case UserLocalStatus.EditProfileSetSearchPurpose:
                     return SetSearchPurpose(user, message);
                 default:
-                    return GenerateCurrentProfile(user);
+                    return GenerateCurrentProfile(user, "", true, false);
             }
         }
 
-        private Answer GenerateCurrentProfile(BotUser user)
+        private Answer GenerateCurrentProfile(BotUser user, string sendingMessage, 
+            bool isToUpdateLastMessage, bool isClickCancelButton)
         {
             var purposes = "";
             for (var i = 0; i < user.searchPurposes.Count; i++)
@@ -77,7 +79,7 @@ namespace telegram_bot.tinder.pages_classes
                 }
             }
 
-            var answerText = $"{user.firstName} {user.lastName}\n" +
+            var answerText = sendingMessage + $"{user.firstName} {user.lastName}\n" +
                        $"{user.age} years\n" +
                        $"Town: {user.town}\n" +
                        $"{user.description}\n" +
@@ -85,11 +87,13 @@ namespace telegram_bot.tinder.pages_classes
                        $"Interests: {interests}";
             if (!user.isHasPhoto)
             {
-                return new Answer(true, true, user, 
-                    BotMessageType.text, answerText, user.photoId, keyboard, rowsCount, columnsCount);
+                return new Answer(isToUpdateLastMessage, true, user, 
+                    BotMessageType.text, answerText, user.photoId, keyboard, rowsCount, columnsCount,
+                    null, isClickCancelButton);
             }
-            return new Answer(true, true, user, 
-                BotMessageType.img, answerText, user.photoId, keyboard, rowsCount, columnsCount);
+            return new Answer(isToUpdateLastMessage, true, user, 
+                BotMessageType.img, answerText, user.photoId, keyboard, rowsCount, columnsCount,
+                    null, isClickCancelButton);
         }
 
         private Answer Base(BotUser user, Message message)
@@ -135,63 +139,96 @@ namespace telegram_bot.tinder.pages_classes
                         _usersDb.Update(user.id, user);
                         break;
                     default:
-                        return GenerateCurrentProfile(user);
+                        return GenerateCurrentProfile(user, "", true, false);
                 }
-                return new Answer(true, false, user, BotMessageType.text, answerText);
+                return new Answer(true, true, user, BotMessageType.text, answerText,
+                    "", null, 0, 0, cancelButton);
             }
-            return GenerateCurrentProfile(user);
+            return GenerateCurrentProfile(user, "", true, false);
         }
         private Answer SetAge(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                _usersDb.Update(user.lastMessageId, user);
+                return GenerateCurrentProfile(user, "", true, true);
+            }
+
             if (message.type == BotMessageType.text && int.TryParse(message.text, out var v))
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.age = int.Parse(message.text);
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The age has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
+            
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not number\nInput your age (only number)");
         }
         private Answer SetDescription(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.text)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.description = message.text;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The description has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your profile description");
         }
         private Answer SetImages(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.img)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.photoId = message.photoId;
                 user.isHasPhoto = true;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The photo has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not image\nSend only one image for your profile");
         }
         private Answer SetInterests(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.text)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.interests = message.text.Split().ToList();
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The interests has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your interests (separate only by space)");
         }
         private Answer SetName(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.text)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
@@ -200,31 +237,45 @@ namespace telegram_bot.tinder.pages_classes
                 user.lastName = nameList.Count < 2 ? "" : nameList[1];
                 
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The name has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your name (separate your first and last names by space)");
         }
         private Answer SetTown(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.text)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.town = message.text;
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The town has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false,user,
                 BotMessageType.text, "This is not text\nInput your town");
         }
         private Answer SetSearchPurpose(BotUser user, Message message)
         {
+            if (message.type == BotMessageType.text && message.text == "Cancel")
+            {
+                user.localStatus = UserLocalStatus.EditProfileBase;
+                
+                return GenerateCurrentProfile(user, "", true, true);
+            }
             if (message.type == BotMessageType.text)
             {
                 user.localStatus = UserLocalStatus.EditProfileBase;
                 user.searchPurposes = message.text.Split().ToList();
                 _usersDb.Update(user.id, user);
-                return GenerateCurrentProfile(user);
+                var sendingMessage = "The search purpose has been changed\n";
+                return GenerateCurrentProfile(user, sendingMessage, false, true);
             }
             return new Answer(true, false, user,
                 BotMessageType.text, "This is not text\nInput your search purposes (separate only by space)");

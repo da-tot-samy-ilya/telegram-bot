@@ -9,10 +9,13 @@ namespace telegram_bot.bot
         public Dictionary<string, string> keyBoard;
         public int rowsCount;
         public int columnsCount;
+        public string[] keyboard;
+        public bool isClickCancelButton;
 
         public Answer(bool isToUpdateLastMessage, bool isToGenerateKeyboard, BotUser user,
             BotMessageType type, string text = "", string photoId = "", 
-            Dictionary<string, string> keyBoard = null, int rowsCount = 0, int columnsCount = 0)
+            Dictionary<string, string> keyBoard = null, int rowsCount = 0, int columnsCount = 0,
+            string[] keyboard = null, bool isClickCancelButton = false)
             : base(user, type, text, photoId)
         {
             this.isToUpdateLastMessage = isToUpdateLastMessage;
@@ -20,6 +23,8 @@ namespace telegram_bot.bot
             this.keyBoard = keyBoard;
             this.rowsCount = rowsCount;
             this.columnsCount = columnsCount;
+            this.keyboard = keyboard;
+            this.isClickCancelButton= isClickCancelButton;
         }
 
     }

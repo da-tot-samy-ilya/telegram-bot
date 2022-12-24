@@ -5,6 +5,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using telegram_bot.tinder;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace telegram_bot.bot
 {
@@ -14,12 +15,14 @@ namespace telegram_bot.bot
         private readonly Tinder _tinder;
         private readonly TelegramBotClient _botClient;
         private readonly InlineKeyboard _inlineKeyboard;
+        private readonly Keyboard _keyboard;
         public TelegramBot(UsersDb dbUsers, Tinder tinder, TelegramBotClient botClient, CancellationTokenSource cts)
         {
             _dbUsers = dbUsers;
             _tinder = tinder;
             _botClient = botClient;
             _inlineKeyboard = new InlineKeyboard();
+            _keyboard = new Keyboard();
             var receiverOptions = new ReceiverOptions { AllowedUpdates = Array.Empty<UpdateType>() };
             _botClient.StartReceiving(
                 updateHandler: HandleUpdateAsync,
@@ -36,12 +39,7 @@ namespace telegram_bot.bot
         {
             var message = GenerateMessage(update);
             var answer = _tinder.GetAnswer(message, message.user.lastMessageId);
-            Console.WriteLine(answer.isToGenerateKeyboard);
-            Console.WriteLine(answer.isToUpdateLastMessage);
-            Console.WriteLine(answer.type);
-            Console.WriteLine(answer.user.onWhichPage);
             await SendAnswer(answer, cancellationToken);
-
         }
 
         private Message GenerateMessage(Update update)
@@ -78,21 +76,51 @@ namespace telegram_bot.bot
         private async Task SendAnswer(Answer answer, CancellationToken cancellationToken)
         {
             var message = new Telegram.Bot.Types.Message();
+
             if (answer.isToUpdateLastMessage)
             {
                 try
                 {
-                    await _botClient.DeleteMessageAsync(chatId: answer.user.id, 
-                        messageId: answer.user.lastMessageId, 
-                        cancellationToken: cancellationToken);
+                    await _botClient.DeleteMessageAsync(chatId: answer.user.id,
+                        messageId: answer.user.lastMessageId,
+                        cancellationToken: cancellationToken); ;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("There is no such message to delete");
                 }
             }
+
+            if (answer.isClickCancelButton)
+            {
+                if (answer.keyboard != null)
+                    message = await _botClient.SendTextMessageAsync(
+                                chatId: answer.user.id,
+                                text: "Update successful!",
+                                replyMarkup: new ReplyKeyboardRemove(),
+                                cancellationToken: cancellationToken);
+                else
+                    message = await _botClient.SendTextMessageAsync(
+                                chatId: answer.user.id,
+                                text: "Cancellation of changes",
+                                replyMarkup: new ReplyKeyboardRemove(),
+                                cancellationToken: cancellationToken);
+            }
+            
+
             if (answer.isToGenerateKeyboard)
             {
+                if (answer.keyboard != null)
+                {
+                    message = await _botClient.SendTextMessageAsync(
+                        chatId: answer.user.id,
+                        text: answer.text,
+                        replyMarkup: _keyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
+                            answer.keyboard),
+                        cancellationToken: cancellationToken);
+                    
+                    return;
+                }
                 switch (answer.type)
                 {
                     case BotMessageType.img:
@@ -113,7 +141,6 @@ namespace telegram_bot.bot
                                 replyMarkup: _inlineKeyboard.GenerateKeyboard(answer.rowsCount, answer.columnsCount,
                                     answer.keyBoard),
                                 cancellationToken: cancellationToken);
-                            
                         }
                         catch (Exception e)
                         {

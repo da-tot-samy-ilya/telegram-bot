@@ -9,7 +9,7 @@ namespace telegram_bot.bot
             var rowsButton = new List<List<InlineKeyboardButton>>();
             int iterator = 0;
             var keys = keyboard.Keys.ToArray();
-            
+
             for (var i = 0; i < rows; i++)
             {
                 var buttons = new List<InlineKeyboardButton>();
