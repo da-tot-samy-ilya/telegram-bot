@@ -15,7 +15,8 @@ namespace telegram_bot.bot
         public Answer(bool isToUpdateLastMessage, bool isToGenerateKeyboard, BotUser user,
             BotMessageType type, string text = "", string photoId = "", 
             Dictionary<string, string> keyBoard = null, int rowsCount = 0, int columnsCount = 0,
-            string[] keyboard = null, bool isClickCancelButton = false) : base(user, type, text, photoId)
+            string[] keyboard = null, bool isClickCancelButton = false)
+            : base(user, type, text, photoId)
         {
             this.isToUpdateLastMessage = isToUpdateLastMessage;
             this.isToGenerateKeyboard = isToGenerateKeyboard;

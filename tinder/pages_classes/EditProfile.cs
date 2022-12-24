@@ -7,7 +7,7 @@ namespace telegram_bot.tinder.pages_classes
 {
     public class EditProfile : Page
     {
-        string[] cancelButton = new string[] { "Cancel" };
+        public string[] cancelButton = new string[] { "Cancel" };
         public EditProfile(UsersDb usersDb, string text = "", string imgId = ""): base(usersDb)
         {
             this.text = text;
@@ -142,7 +142,7 @@ namespace telegram_bot.tinder.pages_classes
                         return GenerateCurrentProfile(user, "", true, false);
                 }
                 return new Answer(true, true, user, BotMessageType.text, answerText,
-                    "", null, 1, 1, cancelButton);
+                    "", null, 0, 0, cancelButton);
             }
             return GenerateCurrentProfile(user, "", true, false);
         }
