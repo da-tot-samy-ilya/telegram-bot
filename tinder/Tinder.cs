@@ -26,12 +26,13 @@ namespace telegram_bot.tinder
             }
             var currentPageEnum = pages.GetPageEnumByCommand(message.text);
 
+            
             if (currentPageEnum != PagesEnum.not_page)
             {
                 message.user.onWhichPage = currentPageEnum;
                 message.user.localStatus = pages.GetUserLocalStatusEnumByEnum(currentPageEnum);
                 usersDb.Update(message.user.id, message.user);
-               
+
                 currentPage = pages.GetPageByEnum(currentPageEnum);
             }
            
